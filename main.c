@@ -26,4 +26,6 @@ int	main (void)
 		free(buffer);
 		i = 0;
 	}
+
+	return (0);
 }
