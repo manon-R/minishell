@@ -2,15 +2,15 @@
 
 int	is_separators(char c)
 {
-	int	i;
+	if (c == '\n' || c == '|' || c == '>' || c == '<')
+		return (SUCCESS);
+	return (FAIL);
+}
 
-	i = 0;
-	while (SEPARATORS[i] != '\0')
-	{
-		if (c == SEPARATORS[i])
-			return (SUCCESS);
-		i++;	
-	}
+int	is_space(char c)
+{
+	if (c == ' ' || c == '\t' || c == '\r')
+		return (SUCCESS);
 	return (FAIL);
 }
 
@@ -23,13 +23,18 @@ int	compute_size(char *str)
 	size = 0;
 	while (str[i])
 	{
-		while (is_separators(str[i]) == SUCCESS)
+		while (str[i] && is_space(str[i]) == SUCCESS)
 			i++;
-		if (str[i] && is_separators(str[i]) == FAIL)
+		if (str[i] && is_space(str[i]) == FAIL)
 		{
 			size++;
 			while (str[i] && is_separators(str[i]) == FAIL)
 				i++;
+			if (is_separators(str[i]) == SUCCESS)
+			{
+				i++;
+				size++;
+			}
 		}
 	}
 	return (size);
@@ -76,17 +81,51 @@ char	**ft_split(char *str)
 		return (0);
 	while (str[i])
 	{
-		while (is_separators(str[i]) == SUCCESS)
+		while (str[i] && is_space(str[i]) == SUCCESS)
 			i++;
-		if (str[i] && is_separators(str[i]) == FAIL)
+		if (str[i] && is_space(str[i]) == FAIL)
 		{
 			start = i;
-			while (str[i] && is_separators(str[i]) == FAIL)
+			//TO DO: different function for quotes case
+			if (str[i] == '"' || str[i] == '\'')
+			{
 				i++;
-			new_tab[index] = ft_strdup(str, start, i);
-			index++;
+				while(str[i] && str[i] != '"' && str[i] != '\'')
+					i++;
+				if (str[i] && (str[i] == '"' || str[i] == '\''))
+					i++;
+			}
+			else
+			{
+				while (str[i] && is_separators(str[i]) == FAIL)
+					i++;
+			}
+			if (i != start)
+			{
+				new_tab[index++] = ft_strdup(str, start, i);
+				if (!new_tab[index - 1])
+					return (free_all(new_tab), NULL);
+			}
+			if (str[i] && is_separators(str[i]) == SUCCESS)
+			{
+				start = i;
+				while (str[i] && is_separators(str[i]) == SUCCESS)
+					i++;
+				new_tab[index++] = ft_strdup(str, start, i);
+				if (!new_tab[index - 1])
+					return (free_all(new_tab), NULL);
+			}
 		}
 	}
 	new_tab[index] = 0;
 	return (new_tab);
 }
+
+/* To be defined
+-> unclosed quote behaviour: Token error 
+*/
+
+/* TO DO */
+/*
+-> Variable d'environnement $ suivi de n'importe quoi
+*/

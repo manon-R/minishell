@@ -1,4 +1,4 @@
-SRCS	= main.c clean_data.c ft_split.c ft_strcmp.c ft_strlen.c 
+SRCS	= main.c clean_data.c ft_split.c ft_strcmp.c ft_strlen.c testmain.c lexer.c parser.c
 
 OBJS	= ${SRCS:.c=.o}
 CC	= cc
@@ -16,4 +16,4 @@ clean:
 fclean: clean
 		${RM} ${NAME}
 
-re:		fclean al
+re:		fclean all
