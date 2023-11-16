@@ -9,7 +9,8 @@
 # define SUCCESS		0
 # define FAIL			1
 
-#define SYNTAX_ERROR	"syntax error near unexpected symbol"
+# define SYNTAX_ERROR	"syntax error near unexpected token"
+# define UNCLOSED_ERROR	"syntax error unclosed quote"
 
 typedef enum e_token_type
 {
@@ -28,13 +29,17 @@ typedef struct s_node
 	char	*token;
 }					t_node;
 
+char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
 
 char	**ft_split(char *str);
 
+int		check_unclosed(char *cmd);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
 int		ft_strlen_tab(char **tab);
+int		get_node_id_pipe(t_node **node_tab, int size);
+int		get_node_id_redir(t_node **node_tab, int size);
 int		is_separators(char c);
 
 t_node	*lexer(char **cmd_tab);

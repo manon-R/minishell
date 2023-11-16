@@ -40,21 +40,6 @@ int	compute_size(char *str)
 	return (size);
 }
 
-char	*ft_strcpy(char *dest, char *src, int start, int end)
-{
-	int	i;
-
-	i = 0;
-	while (start < end)
-	{
-		dest[i] = src[start];
-		start++;
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
 char	*ft_strdup(char *src, int start, int end)
 {
 	char	*dest;
@@ -90,7 +75,7 @@ char	**ft_split(char *str)
 			if (str[i] == '"' || str[i] == '\'')
 			{
 				i++;
-				while(str[i] && str[i] != '"' && str[i] != '\'')
+				while (str[i] && str[i] != '"' && str[i] != '\'')
 					i++;
 				if (str[i] && (str[i] == '"' || str[i] == '\''))
 					i++;

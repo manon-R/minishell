@@ -1,4 +1,4 @@
-SRCS	= main.c clean_data.c ft_split.c ft_strcmp.c ft_strlen.c testmain.c lexer.c parser.c
+SRCS	= main.c clean_data.c ft_split.c ft_strcmp.c ft_strcpy.c ft_strlen.c test_main.c lexer.c parser.c utils_tab_node.c
 
 OBJS	= ${SRCS:.c=.o}
 CC	= cc
