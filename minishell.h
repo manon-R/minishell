@@ -34,6 +34,9 @@ char	*ft_strdup(char *src, int start, int end);
 
 char	**ft_split(char *str);
 
+int		check_error_node(t_node **node_tab, int size);
+int		check_pipe_node(t_node **node_tab, int size);
+int		check_redir_node(t_node **node_tab, int size);
 int		check_unclosed(char *cmd);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);

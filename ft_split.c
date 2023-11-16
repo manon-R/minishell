@@ -105,12 +105,3 @@ char	**ft_split(char *str)
 	new_tab[index] = 0;
 	return (new_tab);
 }
-
-/* To be defined
--> unclosed quote behaviour: Token error 
-*/
-
-/* TO DO */
-/*
--> Variable d'environnement $ suivi de n'importe quoi
-*/
