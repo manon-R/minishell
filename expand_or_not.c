@@ -46,6 +46,7 @@ int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 }
 
 // regarde si STR ou STR double quote *OK
+// regarde si il y a une variable d'env dans la str
 // cherche le nom de la var dans le STR et check si la var existe
 // si oui : fonction expand qui prend un nom et return la valeur de la variable remplace $name par cette valeur
 // si non: remplace $name par un str vide ou vide : "" donc garder l'adresse du dollar en memoire ?
