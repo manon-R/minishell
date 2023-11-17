@@ -32,6 +32,18 @@ int	is_str_single_quoted(t_node node)
 	return (FAIL);
 }
 
+int	is_str(t_node node)
+{
+	int	i;
+
+	i = 0;
+	if (node.type != T_STR)
+		return (FAIL);
+	if (is_str_double_quoted(node) == FAIL && is_str_single_quoted(node) == FAIL)
+		return (SUCCESS);
+	return (FAIL);
+}
+
 int	is_redir_node(t_node node)
 {
 	int	i;
