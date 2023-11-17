@@ -29,24 +29,40 @@ typedef struct s_node
 	char	*token;
 }					t_node;
 
+typedef struct s_var_env
+{
+	char	*name;
+	char	*value;
+	struct s_var_env	*next;
+}					t_var_env;
+
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
 
+char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
 
+int		append_list(t_var_env **env_list, char *var);
 int		check_error_node(t_node **node_tab, int size);
-int		check_pipe_node(t_node **node_tab, int size);
-int		check_redir_node(t_node **node_tab, int size);
 int		check_unclosed(char *cmd);
+int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
 int		ft_strlen_tab(char **tab);
 int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
+int		init_env_list(t_var_env **env_list, char **envp);
 int		is_separators(char c);
+int		is_redir_node(t_node node);
+int		is_str_double_quoted(t_node node);
+int		is_str_single_quoted(t_node node);
+int		var_exist(t_var_env *env_list, char *var_name);
 
-t_node	*lexer(char **cmd_tab);
+t_node		*lexer(char **cmd_tab);
 
+void	check_pipe_node(t_node **node_tab, int size);
+void	check_redir_node(t_node **node_tab, int size);
+void	display_env_list(t_var_env **env_list);
 void	free_all(char **content);
 void	parser(t_node **node_tab, int size);
 
