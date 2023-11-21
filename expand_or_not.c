@@ -43,6 +43,7 @@ char	*get_name_env_var(t_node **node_tab, int index)
 	i = 0;
 	while ((*node_tab)[index].token[i] && (*node_tab)[index].token[i] != '$')
 		i++;
+	i++;
 	start = i;
 	while ((*node_tab)[index].token[i] && (*node_tab)[index].token[i] != ' ')
 		i++;
@@ -51,19 +52,21 @@ char	*get_name_env_var(t_node **node_tab, int index)
 
 int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 {
-	char *name;
+	char	*name;
+	char	*value;
+	int		replace_space;
 
 	name = get_name_env_var(node_tab, index);
 	if (!name)
 		return (FAIL);
-	if (!env_list)
+	replace_space = ft_strlen(name) + 1; // +1 pour le $
+	if (var_exist(*env_list, name) == FAIL)
+		return (expand_var(node_tab, index, "", replace_space));
+	value = take_value(*env_list, name);
+	if (!value)
 		return (FAIL);
+	expand_var(node_tab, index, value, replace_space);
+	if (has_env_var((*node_tab)[index].token) == SUCCESS)
+		return (expand_or_empty(node_tab, index, env_list));
 	return (SUCCESS);
 }
-
-// regarde si STR ou STR double quote *OK
-// regarde si il y a une variable d'env dans la str OK
-// cherche le nom de la var dans le STR et check si la var existe
-// si oui : fonction expand qui prend un nom et return la valeur de la variable remplace $name par cette valeur
-// si non: remplace $name par un str vide ou vide : "" donc garder l'adresse du dollar en memoire ?
-

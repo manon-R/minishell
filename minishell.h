@@ -38,6 +38,7 @@ typedef struct s_var_env
 
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
+char	*take_value( t_var_env *env_list, char *name);
 
 char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
@@ -47,6 +48,7 @@ int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
 int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
+int		expand_var(t_node **node_tab, int index, char *value, int name_size);
 int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
