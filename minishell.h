@@ -46,6 +46,7 @@ int		append_list(t_var_env **env_list, char *var);
 int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
+int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
 int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);

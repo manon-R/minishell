@@ -34,7 +34,7 @@ int	check_env_var(t_node **node_tab, int size, t_var_env **env_list)
 	return (SUCCESS);
 }
 
-char	*get_name_env_var(t_node **node_tab, int index, t_var_env **env_list)
+char	*get_name_env_var(t_node **node_tab, int index)
 {
 	int	start;
 	int	i;
@@ -53,10 +53,11 @@ int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 {
 	char *name;
 
-	name = get_name_env_var(node_tab, index, env_list);
+	name = get_name_env_var(node_tab, index);
 	if (!name)
 		return (FAIL);
-	
+	if (!env_list)
+		return (FAIL);
 	return (SUCCESS);
 }
 
