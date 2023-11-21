@@ -98,5 +98,3 @@ int	init_env_list(t_var_env **env_list, char **envp)
 	}
 	return (SUCCESS);
 }
-
-// Export : besoin de savoir si on veut creer ou modifier 

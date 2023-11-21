@@ -1,13 +1,14 @@
 #include "minishell.h"
 
-int	has_env_var(char *token)
+int	has_env_var(t_node previous_node, char *token)
 {
 	int	i;
 
 	i = 0;
 	while (token[i])
 	{
-		if (token[i] == '$' && token[i + 1] && token[i + 1] != ' ')
+		if (token[i] == '$' && token[i + 1] && token[i + 1] != ' ' && \
+			previous_node.type != T_HEREDOC)
 			return (SUCCESS);
 		i++;
 	}
@@ -25,7 +26,7 @@ int	check_env_var(t_node **node_tab, int size, t_var_env **env_list)
 	{
 		if ((is_str_double_quoted((*node_tab)[i]) == SUCCESS || \
 			is_str((*node_tab)[i]) == SUCCESS) && \
-			has_env_var((*node_tab)[i].token) == SUCCESS)
+			has_env_var((*node_tab)[i - 1], (*node_tab)[i].token) == SUCCESS)
 			result += expand_or_empty(node_tab, i , env_list);
 		i++;
 	}
@@ -66,7 +67,7 @@ int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 	if (!value)
 		return (FAIL);
 	expand_var(node_tab, index, value, replace_space);
-	if (has_env_var((*node_tab)[index].token) == SUCCESS)
+	if (has_env_var((*node_tab)[index - 1], (*node_tab)[index].token) == SUCCESS)
 		return (expand_or_empty(node_tab, index, env_list));
 	return (SUCCESS);
 }
