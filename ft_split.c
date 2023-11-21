@@ -58,9 +58,11 @@ char	**ft_split(char *str)
 	int		i;
 	int		start;
 	int		index;
+	int		status;
 
 	i = 0;
 	index = 0;
+	status = OUT_QUOTE;
 	new_tab = malloc((compute_size(str) + 1) * sizeof(char *));
 	if (!new_tab)
 		return (0);
@@ -71,19 +73,15 @@ char	**ft_split(char *str)
 		if (str[i] && is_space(str[i]) == FAIL)
 		{
 			start = i;
-			//TO DO: different function for quotes case
-			if (str[i] == '"' || str[i] == '\'')
+			while (str[i])
 			{
+				if ((str[i] == '"' || str[i] == '\'') && status == OUT_QUOTE)
+					status = IN_QUOTE;
+				else if((str[i] == '"' || str[i] == '\'') && status == IN_QUOTE)
+					status = OUT_QUOTE;
+				else if (is_separators(str[i]) == SUCCESS && status == OUT_QUOTE)
+					break;
 				i++;
-				while (str[i] && str[i] != '"' && str[i] != '\'')
-					i++;
-				if (str[i] && (str[i] == '"' || str[i] == '\''))
-					i++;
-			}
-			else
-			{
-				while (str[i] && is_separators(str[i]) == FAIL)
-					i++;
 			}
 			if (i != start)
 			{

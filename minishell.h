@@ -9,6 +9,9 @@
 # define SUCCESS		0
 # define FAIL			1
 
+# define IN_QUOTE		42
+# define OUT_QUOTE		-42
+
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
 
