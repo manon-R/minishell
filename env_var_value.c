@@ -11,40 +11,48 @@ char	*take_value( t_var_env *env_list, char *name)
 	return (NULL);
 }
 
-int	expand_var(t_node **node_tab, int index, char *value, int name_size)
+void	sub_part_expand_var(t_node *node, char *tmp, int name_size, char *value)
 {
-	int		final_size;
 	int		i;
 	int		j;
 	int		elem;
-	char	*tmp;
 
 	i = 0;
 	j = 0;
 	elem = 0;
-	final_size = ft_strlen((*node_tab)[index].token)- name_size + \
-				ft_strlen(value);
-	tmp = (*node_tab)[index].token;
-	(*node_tab)[index].token = malloc(final_size + 1);
-	if (!(*node_tab)[index].token)
-		return (FAIL);
 	while (tmp[i] && tmp[i] != '$')
 	{
 		if (tmp[i] == '"')
 			i++;
 		else
-			(*node_tab)[index].token[elem++] = tmp[i++];
+			(*node).token[elem++] = tmp[i++];
 	}
 	i += name_size;
 	while (value[j])
-		(*node_tab)[index].token[elem++] = value[j++];
+		(*node).token[elem++] = value[j++];
 	while (tmp[i])
 	{
 		if (tmp[i] == '"')
 			i++;
-		(*node_tab)[index].token[elem++] = tmp[i++];
+		(*node).token[elem++] = tmp[i++];
 	}
-	(*node_tab)[index].token[elem] = '\0';
+	(*node).token[elem] = '\0';
 	free(tmp);
+}
+
+int	expand_var(t_node **node_tab, int index, char *value, int name_size )
+{
+	int		final_size;
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	final_size = ft_strlen((*node_tab)[index].token) - name_size + \
+				ft_strlen(value);
+	tmp = (*node_tab)[index].token;
+	(*node_tab)[index].token = malloc(final_size + 1);
+	if (!(*node_tab)[index].token)
+		return (FAIL);
+	sub_part_expand_var(&((*node_tab)[index]), tmp, name_size, value);
 	return (SUCCESS);
 }

@@ -5,7 +5,7 @@ static int	get_index_equal(char *var)
 	int	i;
 
 	i = 0;
-	while(var[i] != '=')
+	while (var[i] != '=')
 		i++;
 	return (i);
 }
@@ -16,7 +16,7 @@ void	del_env_var(t_var_env **env_list, const char *name_del)
 	t_var_env	*new_next;
 
 	tmp = *env_list;
-	while (tmp->next!= NULL)
+	while (tmp->next != NULL)
 	{
 		if (ft_strcmp(tmp->next->name, name_del) == SUCCESS)
 		{
@@ -36,8 +36,8 @@ void	del_env_var(t_var_env **env_list, const char *name_del)
 			tmp = tmp->next;
 	}
 }
-//Etre sur que la variable existe avant d'appeler cette fonction / Ici FAIL si n'existe pas
-int	udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new_value)
+
+int	udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new)
 {
 	t_var_env	*tmp;
 
@@ -47,14 +47,13 @@ int	udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new_v
 	if (tmp != NULL)
 	{
 		free(tmp->value);
-		tmp->value = ft_strdup(new_value, 0, ft_strlen(new_value));
+		tmp->value = ft_strdup(new, 0, ft_strlen(new));
 		if (!tmp->value)
 			return (FAIL);
 		return (SUCCESS);
 	}
 	return (FAIL);
 }
-
 
 int	append_list(t_var_env **env_list, char *var)
 {

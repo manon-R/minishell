@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+int	is_quote(char c)
+{
+	if (c == '\'' || c == '"')
+		return (SUCCESS);
+	return (FAIL);
+}
+
 char	*extract_str(t_node node)
 {
 	int		i;
@@ -16,13 +23,15 @@ char	*extract_str(t_node node)
 		status = IN_QUOTE;
 	}
 	while (node.token[i] && ((node.token[i] != ' ' && status == OUT_QUOTE) || \
-		((node.token[i] != '"' || node.token[i] != '\'') && status == IN_QUOTE)))
+		((node.token[i] != '"' || node.token[i] != '\'') && \
+		status == IN_QUOTE)))
 	{
-		if ((node.token[i] == '"' || node.token[i] == '\'') && status == IN_QUOTE )
+		if ((node.token[i] == '"' || node.token[i] == '\'') && \
+			status == IN_QUOTE)
 			status = OUT_QUOTE;
 		i++;
 	}
-	if (node.token[i - 1] && (node.token[i - 1] == '\'' || node.token[i - 1] == '"'))
+	if (node.token[i - 1] && is_quote(node.token[i - 1] == SUCCESS))
 		i--;
 	return (ft_strdup(node.token, start, i));
 }
@@ -44,7 +53,7 @@ char	*update_token(t_node **node_tab, int index)
 		i++;
 	while (tmp[i] && tmp[i] == ' ')
 		i++;
-	while(tmp[i])
+	while (tmp[i])
 		new_token[j++] = tmp[i++];
 	new_token[j] = '\0';
 	free(tmp);

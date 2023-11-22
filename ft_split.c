@@ -77,10 +77,12 @@ char	**ft_split(char *str)
 			{
 				if ((str[i] == '"' || str[i] == '\'') && status == OUT_QUOTE)
 					status = IN_QUOTE;
-				else if((str[i] == '"' || str[i] == '\'') && status == IN_QUOTE)
+				else if ((str[i] == '"' || str[i] == '\'') && \
+						status == IN_QUOTE)
 					status = OUT_QUOTE;
-				else if (is_separators(str[i]) == SUCCESS && status == OUT_QUOTE)
-					break;
+				else if (is_separators(str[i]) == SUCCESS && \
+						status == OUT_QUOTE)
+					break ;
 				i++;
 			}
 			if (i != start)

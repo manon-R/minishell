@@ -7,7 +7,7 @@ int	is_str_double_quoted(t_node node)
 	i = 0;
 	if (node.type != T_STR)
 		return (FAIL);
-	while(node.token[i])
+	while (node.token[i])
 	{
 		if (node.token[i] == '"')
 			return (SUCCESS);
@@ -23,7 +23,7 @@ int	is_str_single_quoted(t_node node)
 	i = 0;
 	if (node.type != T_STR)
 		return (FAIL);
-	while(node.token[i])
+	while (node.token[i])
 	{
 		if (node.token[i] == '\'')
 			return (SUCCESS);
@@ -36,7 +36,8 @@ int	is_str(t_node node)
 {
 	if (node.type != T_STR)
 		return (FAIL);
-	if (is_str_double_quoted(node) == FAIL && is_str_single_quoted(node) == FAIL)
+	if (is_str_double_quoted(node) == FAIL && \
+		is_str_single_quoted(node) == FAIL)
 		return (SUCCESS);
 	return (FAIL);
 }

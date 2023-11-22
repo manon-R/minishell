@@ -24,7 +24,7 @@ static char	*env_var_dup(t_var_env *env_list)
 	}
 	str_var[index] = '\0';
 	return (str_var);
- }
+}
 
 char	**from_list_to_tab(t_var_env *env_list)
 {
