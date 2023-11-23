@@ -1,10 +1,10 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <readline/readline.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
+# include <readline/readline.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
 
 # define SUCCESS		0
 # define FAIL			1
@@ -34,10 +34,18 @@ typedef struct s_node
 
 typedef struct s_var_env
 {
-	char	*name;
-	char	*value;
+	char				*name;
+	char				*value;
 	struct s_var_env	*next;
 }					t_var_env;
+
+typedef struct s_tabint
+{
+	int	i;
+	int	start;
+	int	index;
+	int	status;
+}					t_tabint;
 
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
@@ -61,18 +69,24 @@ int		get_node_id_redir(t_node **node_tab, int size);
 int		init_env_list(t_var_env **env_list, char **envp);
 int		is_redir_node(t_node node);
 int		is_separators(char c);
+int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
 int		var_exist(t_var_env *env_list, char *var_name);
 
-t_node		*lexer(char **cmd_tab);
+t_node	check_pipe(char *cmd);
+t_node	check_redir(char *cmd);
+t_node	check_str(char *cmd);
+
+t_node	*lexer(char **cmd_tab);
 
 void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_var_env **env_list, const char *name_del);
 void	display_env_list(t_var_env **env_list);
 void	free_all(char **content);
+void	init_tab(t_tabint	*tab);
 void	parser(t_node **node_tab, int size, t_var_env **env_list);
 
 #endif

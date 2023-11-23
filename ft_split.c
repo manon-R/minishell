@@ -1,19 +1,5 @@
 #include "minishell.h"
 
-int	is_separators(char c)
-{
-	if (c == '\n' || c == '|' || c == '>' || c == '<')
-		return (SUCCESS);
-	return (FAIL);
-}
-
-int	is_space(char c)
-{
-	if (c == ' ' || c == '\t' || c == '\r')
-		return (SUCCESS);
-	return (FAIL);
-}
-
 int	compute_size(char *str)
 {
 	int	i;
@@ -40,68 +26,63 @@ int	compute_size(char *str)
 	return (size);
 }
 
-char	*ft_strdup(char *src, int start, int end)
+void	sub_split(char *str, int *i, int *status)
 {
-	char	*dest;
-	int		size_src;
+	while (str[*i])
+	{
+		if ((str[*i] == '"' || str[*i] == '\'') && *status == OUT_QUOTE)
+			*status = IN_QUOTE;
+		else if ((str[*i] == '"' || str[*i] == '\'') && \
+				*status == IN_QUOTE)
+			*status = OUT_QUOTE;
+		else if (is_separators(str[*i]) == SUCCESS && \
+				*status == OUT_QUOTE)
+			break ;
+		(*i)++;
+	}
+}
 
-	size_src = end - start;
-	dest = malloc((size_src + 1) * sizeof(char));
-	if (dest == NULL)
-		return (NULL);
-	return (ft_strcpy(dest, src, start, end));
+int	sub_part_split(char *str, t_tabint *tab, char **new_tab)
+{
+	while (str[(*tab).i] && is_space(str[(*tab).i]) == SUCCESS)
+		((*tab).i)++;
+	if (str[(*tab).i] && is_space(str[(*tab).i]) == FAIL)
+	{
+		(*tab).start = (*tab).i;
+		sub_split(str, &((*tab).i), &((*tab).status));
+		if ((*tab).i != (*tab).start)
+		{
+			new_tab[((*tab).index)++] = ft_strdup(str, (*tab).start, (*tab).i);
+			if (!new_tab[(*tab).index - 1])
+				return (free_all(new_tab), FAIL);
+		}
+		if (str[(*tab).i] && is_separators(str[(*tab).i]) == SUCCESS)
+		{
+			(*tab).start = (*tab).i;
+			while (str[(*tab).i] && is_separators(str[(*tab).i]) == SUCCESS)
+				((*tab).i)++;
+			new_tab[((*tab).index)++] = ft_strdup(str, (*tab).start, (*tab).i);
+			if (!new_tab[(*tab).index - 1])
+				return (free_all(new_tab), FAIL);
+		}
+	}
+	return (SUCCESS);
 }
 
 char	**ft_split(char *str)
 {	
-	char	**new_tab;
-	int		i;
-	int		start;
-	int		index;
-	int		status;
+	char		**new_tab;
+	t_tabint	tab;
 
-	i = 0;
-	index = 0;
-	status = OUT_QUOTE;
+	init_tab(&tab);
 	new_tab = malloc((compute_size(str) + 1) * sizeof(char *));
 	if (!new_tab)
 		return (0);
-	while (str[i])
+	while (str[tab.i])
 	{
-		while (str[i] && is_space(str[i]) == SUCCESS)
-			i++;
-		if (str[i] && is_space(str[i]) == FAIL)
-		{
-			start = i;
-			while (str[i])
-			{
-				if ((str[i] == '"' || str[i] == '\'') && status == OUT_QUOTE)
-					status = IN_QUOTE;
-				else if ((str[i] == '"' || str[i] == '\'') && \
-						status == IN_QUOTE)
-					status = OUT_QUOTE;
-				else if (is_separators(str[i]) == SUCCESS && \
-						status == OUT_QUOTE)
-					break ;
-				i++;
-			}
-			if (i != start)
-			{
-				new_tab[index++] = ft_strdup(str, start, i);
-				if (!new_tab[index - 1])
-					return (free_all(new_tab), NULL);
-			}
-			if (str[i] && is_separators(str[i]) == SUCCESS)
-			{
-				start = i;
-				while (str[i] && is_separators(str[i]) == SUCCESS)
-					i++;
-				new_tab[index++] = ft_strdup(str, start, i);
-				if (!new_tab[index - 1])
-					return (free_all(new_tab), NULL);
-			}
-		}
+		if (sub_part_split(str, &tab, new_tab) == FAIL)
+			return (NULL);
 	}
-	new_tab[index] = 0;
+	new_tab[tab.index] = 0;
 	return (new_tab);
 }
