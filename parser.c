@@ -31,7 +31,7 @@ char	*extract_str(t_node node)
 			status = OUT_QUOTE;
 		i++;
 	}
-	if (node.token[i - 1] && is_quote(node.token[i - 1] == SUCCESS))
+	if (node.token[i - 1] && is_quote(node.token[i - 1]) == SUCCESS)
 		i--;
 	return (ft_strdup(node.token, start, i));
 }
@@ -49,15 +49,22 @@ char	*update_token(t_node **node_tab, int index)
 	new_token = malloc(ft_strlen(tmp) - ft_strlen((*node_tab)[index].token));
 	if (!new_token)
 		return (0);
-	while (tmp[i] && tmp[i] == (*node_tab)[index].token[i])
+	if (is_quote(tmp[j]) == SUCCESS)
+		j++;
+	while (tmp[j] && tmp[j++] == (*node_tab)[index].token[i])
 		i++;
-	while (tmp[i] && tmp[i] == ' ')
-		i++;
-	while (tmp[i])
-		new_token[j++] = tmp[i++];
-	new_token[j] = '\0';
-	free(tmp);
-	return (new_token);
+	while (tmp[j] && tmp[j] == ' ')
+		j++;
+	i = 0;
+	while (tmp[j])
+	{
+		if (is_quote(tmp[j]) == SUCCESS)
+			j++;
+		else
+			new_token[i++] = tmp[j++];
+	}
+	new_token[i] = '\0';
+	return (free(tmp), new_token);
 }
 
 int	complete_redir_node(t_node **node_tab, int *size)
