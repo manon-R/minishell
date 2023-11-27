@@ -48,3 +48,10 @@ int	is_redir_node(t_node node)
 		return (FAIL);
 	return (SUCCESS);
 }
+
+int	is_heredoc_node(t_node node)
+{
+	if (node.type == T_HEREDOC)
+		return (SUCCESS);
+	return (FAIL);
+}
