@@ -16,17 +16,26 @@ int	count_pipe(t_node **node_tab, int size)
 	return (result);
 }
 
-int	count_redir(t_node **node_tab, int size)
+int	count_redir_cmd(t_data *data, t_node *node_tab)
 {
 	int	result;
 	int	i;
 
-	i = 0;
+	i = (*data).index;
 	result = 0;
-	while (i < size)
+	(*data).nb_redir_in = 0;
+	(*data).nb_redir_out = 0;
+	while (i < (*data).size && node_tab[i].type != T_PIPE)
 	{
-		if (is_redir_node((*node_tab)[i]) == SUCCESS)
+		if (is_redir_node(node_tab[i]) == SUCCESS)
+		{
+			if (node_tab[i].type == T_HEREDOC || node_tab[i].type == T_REDIR_IN)
+				(*data).nb_redir_in++;
+			if (node_tab[i].type == T_REDIR_OUT || \
+				node_tab[i].type == T_REDIR_OUT_APPEND)
+				(*data).nb_redir_out++;
 			result++;
+		}
 		i++;
 	}
 	return (result);
@@ -56,5 +65,7 @@ void	init_data(t_data *data, t_node **node_tab, int size)
 	data->size = size;
 	data->nb_pipe = count_pipe(node_tab, size);
 	data->nb_cmd = count_cmd(node_tab, size);
+	data->nb_redir_in = 0;
+	data->nb_redir_out = 0;
 	data->index = 0;
 }

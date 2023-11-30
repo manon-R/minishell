@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include <readline/readline.h>
+# include <readline/history.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -57,6 +58,8 @@ typedef struct s_data
 	int		size;
 	int		nb_cmd;
 	int		nb_pipe;
+	int		nb_redir_in;
+	int		nb_redir_out;
 	int		index;
 }					t_data;
 
@@ -71,6 +74,7 @@ int		append_list(t_var_env **env_list, char *var);
 int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
+int		count_redir_cmd(t_data *data, t_node *node_tab);
 int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
 int		ft_size_env_list(t_var_env *env_list);

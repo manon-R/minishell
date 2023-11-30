@@ -25,7 +25,11 @@ int	redir_in(t_node node, int *child_fd)
 	new_fd = open(node.token, O_RDONLY);
 	if (new_fd < 0)
 		return (FAIL);
+	close(child_fd[0]);
 	child_fd[0] = new_fd;
+	if (dup2(child_fd[0], STDIN_FILENO) == -1)
+		return (perror("dup2"), FAIL);
+	close(child_fd[0]);
 	return (SUCCESS);
 }
 
@@ -40,18 +44,24 @@ int	redir_out(t_node node, int *child_fd)
 		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (new_fd < 0)
 		return (FAIL);
+	close(child_fd[1]);
 	child_fd[1] = new_fd;
+	if (dup2(child_fd[1], STDOUT_FILENO) == -1)
+		return (perror("dup2"), FAIL);
+	close(child_fd[1]);
 	return (SUCCESS);
 }
 
 int	handle_heredoc(t_node node, int *child_fd)
 {
-	int	new_fd;
-
-	new_fd = append_heredoc(node.token);
-	if (new_fd == FAIL)
+	// fermer l'ancien fd avant de lui assigner une nouvelle valeur
+	close(child_fd[0]); 
+	child_fd[0] = append_heredoc(node.token);
+	if (child_fd[0] == FAIL)
 		return (FAIL);
-	child_fd[0] = new_fd;
+	if (dup2(child_fd[0], STDIN_FILENO) == -1)
+		return (perror("dup2"), FAIL);
+	close(child_fd[0]);
 	return (SUCCESS);
 }
 
