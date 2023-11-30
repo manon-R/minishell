@@ -61,6 +61,7 @@ typedef struct s_data
 	int		nb_redir_in;
 	int		nb_redir_out;
 	int		index;
+	int		start_cmd;
 }					t_data;
 
 char	*ft_strcpy(char *dest, char *src, int start, int end);
@@ -69,6 +70,8 @@ char	*take_value( t_var_env *env_list, char *name);
 
 char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
+char	**split_cmd(t_data *data);
+
 
 int		append_list(t_var_env **env_list, char *var);
 int		check_error_node(t_node **node_tab, int size);
