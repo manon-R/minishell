@@ -68,9 +68,9 @@ char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
 char	*take_value( t_var_env *env_list, char *name);
 
+char	**extract_cmd(t_data *data);
 char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
-char	**split_cmd(t_data *data);
 
 
 int		append_list(t_var_env **env_list, char *var);

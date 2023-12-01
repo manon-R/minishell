@@ -57,12 +57,7 @@ char	*update_token(t_node **node_tab, int index)
 		j++;
 	i = 0;
 	while (tmp[j])
-	{
-		if (is_quote(tmp[j]) == SUCCESS)
-			j++;
-		else
-			new_token[i++] = tmp[j++];
-	}
+		new_token[i++] = tmp[j++];
 	new_token[i] = '\0';
 	return (free(tmp), new_token);
 }
