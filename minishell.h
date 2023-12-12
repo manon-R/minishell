@@ -64,19 +64,26 @@ typedef struct s_data
 	int		start_cmd;
 }					t_data;
 
+char	*env_loop(char **envp, char *cmd);
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
+char	*ft_strjoin(char *s1, char *s2);
+char	*process_path(char *cmd, char **envp);
+char	*simple_strdup(char *s);
 char	*take_value( t_var_env *env_list, char *name);
 
 char	**extract_cmd(t_data *data);
 char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
+char	**simple_split(char *s, char c);
 
 
+int		append_heredoc(char *delim);
 int		append_list(t_var_env **env_list, char *var);
 int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
+int		compute_size_cmd(t_data *data, t_node **node_tab);
 int		count_redir_cmd(t_data *data, t_node *node_tab);
 int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
@@ -86,7 +93,7 @@ int		ft_strlen(char *tab);
 int		ft_strlen_tab(char **tab);
 int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
-int		append_heredoc(char *delim);
+int		handle_pipeline(t_data *data, char **envp);
 int		init_env_list(t_var_env **env_list, char **envp);
 int		is_heredoc_node(t_node node);
 int		is_redir_node(t_node node);
@@ -108,8 +115,9 @@ void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_var_env **env_list, const char *name_del);
 void	display_env_list(t_var_env **env_list);
+void	exec_cmd(char *path, char **args, int fd_in, int fd_out);
 void	free_all(char **content);
-void	handle_redir(t_data *data, int *fd, t_node *node_tab);
+void	handle_redir(t_data *data, int *fd_out, int *fd_in, t_node *node_tab);
 void	init_data(t_data *data, t_node **node_tab, int size);
 void	init_tab(t_tabint	*tab);
 void	parser(t_node **node_tab, int size, t_var_env **env_list);

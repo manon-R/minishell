@@ -38,6 +38,12 @@ int	count_redir_cmd(t_data *data, t_node *node_tab)
 		}
 		i++;
 	}
+	if (result == 0)
+	{
+		if (i < (*data).size && node_tab[i].type == T_PIPE)
+			i++;
+		(*data).index = i;
+	}
 	return (result);
 }
 

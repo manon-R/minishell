@@ -6,12 +6,18 @@
 // puis Boucler sur les nodes jusqu'au pipe et split ["ls", "-la", "truc"] 
 //=> boucler sur chaque token et split si space ou boucler si entre quote
 
-int	split_cmd(char **result, t_data *data, t_node **node_tab)
+char	**split_cmd(t_data *data, t_node **node_tab)
 {
 	t_tabint	tab;
 	int			node;
+	int			size;
+	char		**result;
 	char c;
 
+	size = compute_size_cmd(data, data->node_tab);
+	result = malloc((size + 1) * sizeof(char *));
+	if (!result)
+		return (NULL);
 	node = data->start_cmd;
 	tab.status = OUT_QUOTE;
 	tab.index = 0;
@@ -44,7 +50,7 @@ int	split_cmd(char **result, t_data *data, t_node **node_tab)
 					tab.status = OUT_QUOTE;
 					result[tab.index++] = ft_strdup((*node_tab)[node].token, tab.start, tab.i);
 					if (!result[tab.index - 1])
-						return (free_all(result), FAIL);
+						return (free_all(result), NULL);
 				}
 				else if ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] != ' ')
 				{
@@ -53,7 +59,7 @@ int	split_cmd(char **result, t_data *data, t_node **node_tab)
 						tab.i++;
 					result[tab.index++] = ft_strdup((*node_tab)[node].token, tab.start, tab.i);
 					if (!result[tab.index - 1])
-						return (free_all(result), FAIL); // Verif si leaks		
+						return (free_all(result), NULL); // Verif si leaks		
 				}
 			}
 		}
@@ -61,7 +67,7 @@ int	split_cmd(char **result, t_data *data, t_node **node_tab)
 		tab.i = 0;
 	}
 	result[tab.index] = 0;
-	return (SUCCESS);
+	return (result);
 }
 
 
@@ -117,21 +123,10 @@ int	compute_size_cmd(t_data *data, t_node **node_tab)
 char	**extract_cmd(t_data *data)
 {
 	char	**result;
-	int		size;
-	// int		i;
 
-	size = compute_size_cmd(data, data->node_tab);
-	result = malloc((size + 1) * sizeof(char *));
-	if (!result)
+	result = split_cmd(data, data->node_tab);
+	if (result == NULL)
 		return (NULL);
-	if (split_cmd(result, data, data->node_tab) == FAIL)
-		return (NULL);
-	// i = 0;
-	// while(i < size)
-	// {
-	// 	printf("Result[%d] = %s \n", i, result[i]);
-	// 	i++;
-	// }
-	data->start_cmd = data->index;
+	(*data).start_cmd = (*data).index;
 	return (result);
 }

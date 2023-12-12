@@ -17,7 +17,7 @@ void	check_file(char const *file, int i)
 	}
 }
 
-int	redir_in(t_node node, int *child_fd)
+int	redir_in(t_node node, int *fd_in)
 {
 	int	new_fd;
 
@@ -25,15 +25,11 @@ int	redir_in(t_node node, int *child_fd)
 	new_fd = open(node.token, O_RDONLY);
 	if (new_fd < 0)
 		return (FAIL);
-	close(child_fd[0]);
-	child_fd[0] = new_fd;
-	if (dup2(child_fd[0], STDIN_FILENO) == -1)
-		return (perror("dup2"), FAIL);
-	close(child_fd[0]);
+	*fd_in = new_fd;
 	return (SUCCESS);
 }
 
-int	redir_out(t_node node, int *child_fd)
+int	redir_out(t_node node, int *fd_out)
 {
 	int	new_fd;
 
@@ -44,52 +40,46 @@ int	redir_out(t_node node, int *child_fd)
 		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (new_fd < 0)
 		return (FAIL);
-	close(child_fd[1]);
-	child_fd[1] = new_fd;
-	if (dup2(child_fd[1], STDOUT_FILENO) == -1)
-		return (perror("dup2"), FAIL);
-	close(child_fd[1]);
+	*fd_out = new_fd;
 	return (SUCCESS);
 }
 
-int	handle_heredoc(t_node node, int *child_fd)
+int	handle_heredoc(t_node node, int *fd_in)
 {
-	// fermer l'ancien fd avant de lui assigner une nouvelle valeur
-	close(child_fd[0]); 
-	child_fd[0] = append_heredoc(node.token);
-	if (child_fd[0] == FAIL)
+	int	new_fd;
+
+	new_fd = append_heredoc(node.token);
+	if (new_fd == FAIL)
 		return (FAIL);
-	if (dup2(child_fd[0], STDIN_FILENO) == -1)
-		return (perror("dup2"), FAIL);
-	close(child_fd[0]);
+	*fd_in = new_fd;
 	return (SUCCESS);
 }
 
 // a voir si besoin de mettre en valeur de retour int ou void selon gestion
 // des cas d'erreurs
-void	handle_redir(t_data *data, int *child_fd, t_node *node_tab)
+void	handle_redir(t_data *data, int *fd_out, int *fd_in, t_node *node_tab)
 {
 	while ((*data).index < (*data).size && \
 			node_tab[(*data).index].type != T_PIPE)
 	{
 		if (node_tab[(*data).index].type == T_HEREDOC)
 		{
-			if (handle_heredoc(node_tab[(*data).index], child_fd) == FAIL)
+			if (handle_heredoc(node_tab[(*data).index], fd_in) == FAIL)
 				return ;
 		}
-		else if (node_tab[(*data).index].type == T_REDIR_IN)
+		else if (node_tab[(*data).index].type == T_REDIR_IN) //else
 		{
-			if (redir_in(node_tab[(*data).index], child_fd) == FAIL)
+			if (redir_in(node_tab[(*data).index], fd_in) == FAIL)
 				return ;// return (FAIL);
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT)
 		{
-			if (redir_out(node_tab[(*data).index], child_fd) == FAIL)
+			if (redir_out(node_tab[(*data).index], fd_out) == FAIL)
 				return ;// return (FAIL);
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT_APPEND)
 		{
-			if (redir_out(node_tab[(*data).index], child_fd) == FAIL)
+			if (redir_out(node_tab[(*data).index], fd_out) == FAIL)
 				return ;// return (FAIL);
 		}
 		(*data).index++;
