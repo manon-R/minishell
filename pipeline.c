@@ -33,13 +33,16 @@ int	handle_pipeline(t_data *data, char **envp)
 		if (count_redir_cmd(data, *(data->node_tab)) > 0)
 			handle_redir(data, &output_fd, &input_fd, *(data->node_tab));
 		result = extract_cmd(data);
-		path = process_path(result[0], envp);
-		if (!path)
+		if (result[0])
 		{
-            perror("path failed");
-            exit(EXIT_FAILURE);
-        }
-		exec_cmd(path, result, input_fd, output_fd);
+			path = process_path(result[0], envp);
+			if (!path)
+			{
+				perror("path failed");
+				exit(EXIT_FAILURE);
+			}
+			exec_cmd(path, result, input_fd, output_fd);
+		}
 		if (i < (*data).nb_cmd - 1) 
 		{
 			close(pipefd[i][1]);  // Ferme l'extrémité d'écriture du pipe pour la commande actuelle
