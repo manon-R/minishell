@@ -13,3 +13,17 @@ int	is_space(char c)
 		return (SUCCESS);
 	return (FAIL);
 }
+
+int	is_digit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (SUCCESS);
+	return (FAIL);
+}
+
+int	is_alpha(char c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (SUCCESS);
+	return (FAIL);
+}

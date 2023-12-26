@@ -75,4 +75,6 @@ void	init_data(t_data *data, t_node **node_tab, int size)
 	data->nb_redir_out = 0;
 	data->index = 0;
 	data->start_cmd = 0;
+	data->last = FAIL;
+	data->pid_list = NULL;
 }

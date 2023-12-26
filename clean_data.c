@@ -5,10 +5,19 @@ void	free_all(char **content)
 	int	i;
 
 	i = 0;
-	while (content && content[i])
+	while (content[i])
 	{
-		free(content[i]);
+		if (content[i])
+		{
+			free(content[i]);
+			content[i] = NULL;
+		}
 		i++;
 	}
-	free(content);
+	if (content)
+	{
+		free(content);
+		content = NULL;
+
+	}
 }

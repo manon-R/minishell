@@ -1,11 +1,12 @@
 #include "minishell.h"
 
-int	handle_pipeline(t_data *data, char **envp)
+int	handle_pipeline(t_data *data)
 {
 	int		(*pipefd)[2];
 	int		j;
 	int		i;
 	int 	output_fd;
+	int		input_fd;
 	char	*path;
 	char	**result;
 
@@ -26,22 +27,31 @@ int	handle_pipeline(t_data *data, char **envp)
 			j++;
 		}
 	}
-	int input_fd = STDIN_FILENO;
+	input_fd = STDIN_FILENO;
 	while (i < (*data).nb_cmd) 
     {
-		output_fd = (i == ((*data).nb_cmd - 1)) ? STDOUT_FILENO : pipefd[i][1];
+		if (i == (*data).nb_cmd - 1)
+		{
+			(*data).last = SUCCESS;
+			output_fd = STDOUT_FILENO; 
+		}
+		else
+			output_fd = pipefd[i][1];
 		if (count_redir_cmd(data, *(data->node_tab)) > 0)
 			handle_redir(data, &output_fd, &input_fd, *(data->node_tab));
 		result = extract_cmd(data);
 		if (result[0])
 		{
-			path = process_path(result[0], envp);
-			if (!path)
+			if (ft_strcmp(result[0], "exit") == SUCCESS && (*data).last == SUCCESS)
+				(*data).exit = SUCCESS;
+			if (is_builtin(result[0]) == SUCCESS)
+				(*data).ret = exec_builtin(data, result, input_fd, output_fd);
+			else
 			{
-				perror("path failed");
-				exit(EXIT_FAILURE);
+				path = process_path(result[0], (*data).env_tab);
+				if (path)
+					(*data).ret = exec_cmd(path, result, input_fd, output_fd);
 			}
-			exec_cmd(path, result, input_fd, output_fd);
 		}
 		if (i < (*data).nb_cmd - 1) 
 		{
@@ -63,6 +73,6 @@ int	handle_pipeline(t_data *data, char **envp)
     while (i < (*data).nb_cmd) {
         wait(NULL);
         i++;
-    } 
-    return 0;
+    }
+    return (data->ret);
 }

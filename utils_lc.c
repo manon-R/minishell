@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	get_index_equal(char *var)
+int	get_index_equal(char *var)
 {
 	int	i;
 
@@ -80,6 +80,7 @@ int	append_list(t_var_env **env_list, char *var)
 			temp = temp->next;
 		temp->next = new_elem;
 	}
+	// display_env_list(env_list);
 	return (SUCCESS);
 }
 

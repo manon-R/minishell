@@ -9,13 +9,26 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include <signal.h>
+# include <termios.h>
 
 
 # define SUCCESS		0
 # define FAIL			1
+# define MISUSE			2
+# define PERM_DENY		126
+# define CMD_NOT_FOUND	127
+# define CTRL_C			130
+
+# define STDIN 			0
+# define STDOUT 		1
+# define STDERR 		2
 
 # define IN_QUOTE		42
 # define OUT_QUOTE		-42
+
+# define MAX_EXIT		9223372036854775807
+# define MIN_EXIT		-9223372036854775807
 
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
@@ -37,6 +50,12 @@ typedef struct s_node
 	char	*token;
 }					t_node;
 
+typedef struct s_child_pid
+{
+	pid_t				pid;
+	struct s_child_pid	*next;
+}					t_child_pid;
+
 typedef struct s_var_env
 {
 	char				*name;
@@ -54,14 +73,20 @@ typedef struct s_tabint
 
 typedef struct s_data
 {
-	struct 	s_node **node_tab;
-	int		size;
-	int		nb_cmd;
-	int		nb_pipe;
-	int		nb_redir_in;
-	int		nb_redir_out;
-	int		index;
-	int		start_cmd;
+	struct 	s_node		**node_tab;
+	struct s_var_env	*env_list;
+	struct s_child_pid	*pid_list;	
+	char				**env_tab;
+	int					size;
+	int					nb_cmd;
+	int					nb_pipe;
+	int					nb_redir_in;
+	int					nb_redir_out;
+	int					index;
+	int					start_cmd;
+	int					ret;
+	int					last;
+	int					exit;
 }					t_data;
 
 char	*env_loop(char **envp, char *cmd);
@@ -80,21 +105,33 @@ char	**simple_split(char *s, char c);
 
 int		append_heredoc(char *delim);
 int		append_list(t_var_env **env_list, char *var);
+int		builtin_list(t_data *data, char **cmd);
 int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
 int		compute_size_cmd(t_data *data, t_node **node_tab);
 int		count_redir_cmd(t_data *data, t_node *node_tab);
+int		exec_builtin(t_data *data, char **args, int fd_in, int fd_out);
+int		exec_cmd(char *path, char **args, int fd_in, int fd_out);
 int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
+int		ft_echo(char **tab);
+int		ft_env(t_data *data, char **cmd);
+int		ft_exit(t_data *data, char **cmd);
+int		ft_export(t_data *data, char **cmd);
 int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
 int		ft_strlen_tab(char **tab);
+int		ft_unset(t_data *data, char **cmd);
+int		get_index_equal(char *var);
 int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
-int		handle_pipeline(t_data *data, char **envp);
+int		handle_pipeline(t_data *data);
 int		init_env_list(t_var_env **env_list, char **envp);
+int		is_alpha(char c);
+int		is_builtin(char *cmd);
+int		is_digit(char c);
 int		is_heredoc_node(t_node node);
 int		is_redir_node(t_node node);
 int		is_separators(char c);
@@ -102,6 +139,7 @@ int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
+int		udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new);
 int		var_exist(t_var_env *env_list, char *var_name);
 
 t_node	check_pipe(char *cmd);
@@ -114,12 +152,13 @@ void	check_file(char const *file, int i);
 void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_var_env **env_list, const char *name_del);
-void	display_env_list(t_var_env **env_list);
-void	exec_cmd(char *path, char **args, int fd_in, int fd_out);
+void	display_env_list(t_var_env *env_list);
 void	free_all(char **content);
 void	handle_redir(t_data *data, int *fd_out, int *fd_in, t_node *node_tab);
 void	init_data(t_data *data, t_node **node_tab, int size);
 void	init_tab(t_tabint	*tab);
 void	parser(t_node **node_tab, int size, t_var_env **env_list);
+void	ft_putstr_fd(char *str, int fd);
+void	ft_putstr_nl_fd(char *str, int fd);
 
 #endif
