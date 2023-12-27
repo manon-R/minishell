@@ -11,7 +11,6 @@ int	ft_echo(char **tab)
 	{
 		opt++;
 		i++;
-		
 	}
 	while(tab[i] != NULL)
 	{

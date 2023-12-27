@@ -87,24 +87,27 @@ char *extract_name(char *cmd)
 	return (name);
 }
 
-char *extract_value(char *cmd)
+char *extract_value(char *cmd, char *name)
 {
 	int		size;
 	int		i;
+	int		j;
 	char	*value;
 
 	i = get_index_equal(cmd);
-	size = ft_strlen(cmd + i);
+	j = 0;
+	size = ft_strlen(cmd) - ft_strlen(name);
 	value = malloc(size * sizeof(char));
 	if (!value)
 		return (NULL);
 	i++;
-	while (i < size)
+	while (cmd[i])
 	{
-		value[i] = cmd[i];
+		value[j] = cmd[i];
 		i++;
+		j++;
 	}
-	value[i] = '\0';
+	value[j] = '\0';
 	return (value);
 }
 
@@ -115,6 +118,7 @@ int	ft_export(t_data *data, char **cmd)
 	char	*value;
 
 	i = 1;
+	value = NULL;
 	if (!cmd[i])
 	{
 		display_sort_env(data); // env trié par ordre alphabétique + declare -x devant cf bash
@@ -125,16 +129,14 @@ int	ft_export(t_data *data, char **cmd)
 		if (valid_syntax(cmd[i]) == SUCCESS)
 		{
 			name = extract_name(cmd[i]);
-			if (var_exist((*data).env_list, name) == SUCCESS)
+			if (var_exist(data->env_list, name) == SUCCESS)
 			{
-				value = extract_value(cmd[i]);
-				ft_putstr_nl_fd(value, STDOUT);
+				value = extract_value(cmd[i], name);
 				if (value)
-					udpate_env_var_value(&(*data).env_list, name, value);
+					udpate_env_var_value(data, name, value);
 			}
 			else
-				append_list(&data->env_list, cmd[i]);
-			(*data).env_tab = from_list_to_tab((*data).env_list);
+				append_list(data, cmd[i]);
 		}
 		i++;
 	}

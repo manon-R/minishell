@@ -28,20 +28,23 @@ static char	*env_var_dup(t_var_env *env_list)
 
 char	**from_list_to_tab(t_var_env *env_list)
 {
-	char	**env_tab;
-	int		i;
+	char		**env_tab;
+	t_var_env	*tmp;
+	int			i;
 
 	env_tab = malloc(ft_size_env_list(env_list) * sizeof(char *));
 	if (!env_tab)
 		return (NULL);
 	i = 0;
-	while (env_list != NULL)
+	tmp = env_list;
+	while (tmp != NULL)
 	{
-		env_tab[i++] = env_var_dup(env_list);
+		env_tab[i++] = env_var_dup(tmp);
 		if (!env_tab[i - 1])
 			return (NULL);
-		env_list = env_list->next;
+		tmp = tmp->next;
 	}
 	env_tab[i] = 0;
+	free(tmp);
 	return (env_tab);
 }

@@ -45,7 +45,10 @@ int	handle_pipeline(t_data *data)
 			if (ft_strcmp(result[0], "exit") == SUCCESS && (*data).last == SUCCESS)
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)
+			{
 				(*data).ret = exec_builtin(data, result, input_fd, output_fd);
+				// append_list(&(*data).env_list, "test=test");
+			}
 			else
 			{
 				path = process_path(result[0], (*data).env_tab);

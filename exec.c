@@ -72,7 +72,11 @@ int	exec_builtin(t_data *data, char **args, int fd_in, int fd_out)
             dup2(fd_out, STDOUT_FILENO);
             close(fd_out);
         }
-		exit(builtin_list(data, args));
+        builtin_list(data, args);
+		exit(SUCCESS);
     }
-	return (SUCCESS);
+    else
+        builtin_parent(data, args);
+		// (*data).env_tab = from_list_to_tab((*data).env_list); OU PAS?
+    return (SUCCESS);
 }

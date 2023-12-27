@@ -10,13 +10,13 @@ int	get_index_equal(char *var)
 	return (i);
 }
 
-void	del_env_var(t_var_env **env_list, const char *name_del)
+void	del_env_var(t_data *data, char *name_del)
 {
 	t_var_env	*tmp;
 	t_var_env	*new_next;
 
-	tmp = *env_list;
-	while (tmp->next != NULL)
+	tmp = data->env_list;
+	while (tmp != NULL && tmp->next != NULL)
 	{
 		if (ft_strcmp(tmp->next->name, name_del) == SUCCESS)
 		{
@@ -24,26 +24,29 @@ void	del_env_var(t_var_env **env_list, const char *name_del)
 			free(tmp->next->name);
 			free(tmp->next->value);
 			free(tmp->next);
-			if (new_next->next != NULL)
-				tmp->next = new_next->next;
+			if (new_next != NULL)
+				tmp->next = new_next;
 			else
 				tmp->next = NULL;
-			free(new_next->name);
-			free(new_next->value);
-			free(new_next);
 		}
-		else
+		else if (tmp->next)
 			tmp = tmp->next;
+		else
+			tmp = NULL;
 	}
 }
 
-int	udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new)
+int	udpate_env_var_value(t_data *data, char *var_name, char *new)
 {
 	t_var_env	*tmp;
 
-	tmp = *env_list;
-	while (tmp != NULL && ft_strcmp(tmp->name, var_name) == FAIL)
+	tmp = data->env_list;
+	while (tmp != NULL)
+	{
+		if (ft_strcmp(tmp->name, var_name) == SUCCESS)
+			break ;
 		tmp = tmp->next;
+	}
 	if (tmp != NULL)
 	{
 		free(tmp->value);
@@ -55,7 +58,7 @@ int	udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new)
 	return (FAIL);
 }
 
-int	append_list(t_var_env **env_list, char *var)
+int	append_list(t_data *data, char *var)
 {
 	t_var_env	*new_elem;
 	t_var_env	*temp;
@@ -71,28 +74,26 @@ int	append_list(t_var_env **env_list, char *var)
 	if (!new_elem->name || !new_elem->value)
 		return (FAIL);
 	new_elem->next = NULL;
-	if (*env_list == NULL)
-		*env_list = new_elem;
+	if (data->env_list == NULL)
+		data->env_list = new_elem;
 	else
 	{
-		temp = *env_list;
+		temp = data->env_list;
 		while (temp->next != NULL)
 			temp = temp->next;
 		temp->next = new_elem;
 	}
-	// display_env_list(env_list);
 	return (SUCCESS);
 }
 
-int	init_env_list(t_var_env **env_list, char **envp)
+int	init_env_list(t_data *data, char **envp)
 {
 	int			i;
 
 	i = 0;
-	*env_list = NULL;
 	while (envp && envp[i])
 	{
-		if (append_list(env_list, envp[i]) == FAIL)
+		if (append_list(data, envp[i]) == FAIL)
 			return (FAIL);
 		i++;
 	}

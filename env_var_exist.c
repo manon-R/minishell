@@ -2,11 +2,15 @@
 
 int	var_exist(t_var_env *env_list, char *var_name)
 {
-	while (env_list != NULL)
+	t_var_env *tmp;
+
+	tmp = env_list;
+	while (tmp != NULL)
 	{
-		if (ft_strcmp(env_list->name, var_name) == SUCCESS)
+		if (ft_strcmp(tmp->name, var_name) == SUCCESS)
 			return (SUCCESS);
-		env_list = env_list->next;
+		tmp = tmp->next;
 	}
+	free(tmp);
 	return (FAIL);
 }

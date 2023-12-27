@@ -9,7 +9,7 @@ int ft_env(t_data *data, char **cmd)
         ft_putstr_nl_fd("\": No such file or directory", STDERR);
         exit(CMD_NOT_FOUND);
     } 
-    // display_env_list(&(*data).env_list);
     display_env_list(data->env_list);
+    // display_env_list((*data).env_list);
     return (SUCCESS);
 }

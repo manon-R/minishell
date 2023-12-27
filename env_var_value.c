@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*take_value( t_var_env *env_list, char *name)
+char	*take_value(t_var_env *env_list, char *name)
 {
 	while (env_list != NULL)
 	{

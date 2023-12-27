@@ -27,6 +27,8 @@
 # define IN_QUOTE		42
 # define OUT_QUOTE		-42
 
+# define BUFFER_SIZE	1050
+
 # define MAX_EXIT		9223372036854775807
 # define MIN_EXIT		-9223372036854775807
 
@@ -93,6 +95,7 @@ char	*env_loop(char **envp, char *cmd);
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
 char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strjoin_classic(char *s1, char *s2);
 char	*process_path(char *cmd, char **envp);
 char	*simple_strdup(char *s);
 char	*take_value( t_var_env *env_list, char *name);
@@ -104,8 +107,9 @@ char	**simple_split(char *s, char c);
 
 
 int		append_heredoc(char *delim);
-int		append_list(t_var_env **env_list, char *var);
+int		append_list(t_data *data, char *var);
 int		builtin_list(t_data *data, char **cmd);
+int		builtin_parent(t_data *data, char **cmd);
 int		check_error_node(t_node **node_tab, int size);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
 int		check_unclosed(char *cmd);
@@ -115,10 +119,12 @@ int		exec_builtin(t_data *data, char **args, int fd_in, int fd_out);
 int		exec_cmd(char *path, char **args, int fd_in, int fd_out);
 int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
+int		ft_cd(t_data *data, char **cmd);
 int		ft_echo(char **tab);
 int		ft_env(t_data *data, char **cmd);
 int		ft_exit(t_data *data, char **cmd);
 int		ft_export(t_data *data, char **cmd);
+int		ft_pwd(void);
 int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
@@ -128,7 +134,7 @@ int		get_index_equal(char *var);
 int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
 int		handle_pipeline(t_data *data);
-int		init_env_list(t_var_env **env_list, char **envp);
+int		init_env_list(t_data *data, char **envp);
 int		is_alpha(char c);
 int		is_builtin(char *cmd);
 int		is_digit(char c);
@@ -139,7 +145,7 @@ int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
-int		udpate_env_var_value(t_var_env **env_list, const char *var_name, char *new);
+int		udpate_env_var_value(t_data *data, char *var_name, char *new);
 int		var_exist(t_var_env *env_list, char *var_name);
 
 t_node	check_pipe(char *cmd);
@@ -151,7 +157,7 @@ t_node	*lexer(char **cmd_tab);
 void	check_file(char const *file, int i);
 void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
-void	del_env_var(t_var_env **env_list, const char *name_del);
+void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
 void	free_all(char **content);
 void	handle_redir(t_data *data, int *fd_out, int *fd_in, t_node *node_tab);

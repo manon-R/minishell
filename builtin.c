@@ -17,18 +17,23 @@ int	builtin_list(t_data *data, char **cmd)
 {
 	if (ft_strcmp(cmd[0], "echo") == SUCCESS)
 		return (ft_echo(cmd));
-	// if (ft_strcmp(cmd[0], "cd") == SUCCESS)
-	// 	return (ft_cd(cmd));
-	// if (ft_strcmp(cmd[0], "pwd") == SUCCESS)
-	// 	return (ft_pwd(cmd)); //si > 1 args ils sont ignores
-	if (ft_strcmp(cmd[0], "export") == SUCCESS) // A FAIRE a chaque export ou unset data.env_tab = from_list_to_tab(data.env_list);
-		ft_export(data, cmd);
-	if (ft_strcmp(cmd[0], "unset") == SUCCESS)
-		ft_unset(data, cmd);
+	if (ft_strcmp(cmd[0], "pwd") == SUCCESS)
+		return (ft_pwd());
 	if (ft_strcmp(cmd[0], "env") == SUCCESS)
 		ft_env(data, cmd);
 	if (ft_strcmp(cmd[0], "exit") == SUCCESS)
 		return (ft_exit(data, cmd));
+	return (SUCCESS);
+}
+
+int	builtin_parent(t_data *data, char **cmd)
+{
+	if (ft_strcmp(cmd[0], "export") == SUCCESS) // A FAIRE a chaque export ou unset data.env_tab = from_list_to_tab(data.env_list);
+		ft_export(data, cmd);
+	if (ft_strcmp(cmd[0], "unset") == SUCCESS)
+		ft_unset(data, cmd);
+	if (ft_strcmp(cmd[0], "cd") == SUCCESS)
+		return (ft_cd(data, cmd));
 	return (SUCCESS);
 }
 
