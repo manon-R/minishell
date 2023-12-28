@@ -38,13 +38,15 @@ int	ft_cd(t_data *data, char **cmd)
 		return (FAIL);
 	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
 		return (FAIL);
-   	if (!cmd[1]) // Case cd
+   	if (!cmd[1] && (*data).nb_pipe == 0) // Case cd
 	{
 		if (var_exist(data->env_list, "HOME") == SUCCESS)
 		{
 			if (chdir(take_value(data->env_list, "HOME")) != 0)
 			{
-				perror("minishell: cd: "); //bash: cd: truc: Aucun fichier ou dossier de ce type
+				ft_putstr_fd("minishell: cd: ", STDERR);
+				ft_putstr_fd(take_value(data->env_list, "HOME"), STDERR);
+				ft_putstr_nl_fd(" no such file or directory", STDERR);
 				return (FAIL);
 			}
 			return (update_pwd(data, old_pwd));
@@ -55,11 +57,16 @@ int	ft_cd(t_data *data, char **cmd)
 			return (FAIL);
 		}
 	}
-	if (chdir(cmd[1]) != 0)
+	if ((*data).nb_pipe == 0)
 	{
-		perror("minishell: cd: "); //bash: cd: truc: Aucun fichier ou dossier de ce type
-		return (FAIL);
+		if (chdir(cmd[1]) != 0)
+		{
+			ft_putstr_fd("minishell: cd: ", STDERR);
+			ft_putstr_fd(cmd[1], STDERR);
+			ft_putstr_nl_fd(" No such file or directory", STDERR);
+			return (FAIL);
+		}
+		update_pwd(data, old_pwd);
 	}
-	update_pwd(data, old_pwd);
 	return (SUCCESS);
 }
