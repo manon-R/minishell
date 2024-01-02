@@ -15,7 +15,7 @@ int	has_env_var(t_node previous_node, char *token)
 	return (FAIL);
 }
 
-int	check_env_var(t_node **node_tab, int size, t_var_env **env_list)
+int	check_env_var(t_node **node_tab, int size, t_var_env **env_list, t_data *data)
 {
 	int	i;
 	int	result;
@@ -27,7 +27,7 @@ int	check_env_var(t_node **node_tab, int size, t_var_env **env_list)
 		if ((is_str_double_quoted((*node_tab)[i]) == SUCCESS || \
 			is_str((*node_tab)[i]) == SUCCESS) && \
 			has_env_var((*node_tab)[i - 1], (*node_tab)[i].token) == SUCCESS)
-			result += expand_or_empty(node_tab, i, env_list);
+			result += expand_or_empty(node_tab, i, env_list, data);
 		i++;
 	}
 	if (result > 0)
@@ -51,7 +51,7 @@ char	*get_name_env_var(t_node **node_tab, int index)
 	return (ft_strdup((*node_tab)[index].token, start, i));
 }
 
-int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
+int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list, t_data *data)
 {
 	char	*name;
 	char	*value;
@@ -60,6 +60,8 @@ int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 	name = get_name_env_var(node_tab, index);
 	if (!name)
 		return (FAIL);
+	if (name[0] == '?')
+		return (expand_var(node_tab, index, ft_itoa(data->ret), ft_strlen(ft_itoa(data->ret)) + 1));
 	replace_space = ft_strlen(name) + 1;
 	if (var_exist(*env_list, name) == FAIL)
 		return (expand_var(node_tab, index, "", replace_space));
@@ -69,7 +71,7 @@ int	expand_or_empty(t_node **node_tab, int index, t_var_env **env_list)
 	expand_var(node_tab, index, value, replace_space);
 	if (has_env_var((*node_tab)[index - 1], \
 		(*node_tab)[index].token) == SUCCESS)
-		return (expand_or_empty(node_tab, index, env_list));
+		return (expand_or_empty(node_tab, index, env_list, data));
 	return (SUCCESS);
 }
-// l63 +1 pour le $
+// l65 +1 pour le $

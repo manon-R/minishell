@@ -77,4 +77,6 @@ void	init_data(t_data *data, t_node **node_tab, int size)
 	data->start_cmd = 0;
 	data->last = FAIL;
 	data->pid_list = NULL;
+	data->input_fd = dup(STDIN);
+	data->output_fd = dup(STDOUT);
 }

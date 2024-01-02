@@ -77,13 +77,15 @@ typedef struct s_data
 {
 	struct 	s_node		**node_tab;
 	struct s_var_env	*env_list;
-	struct s_child_pid	*pid_list;	
+	struct s_child_pid	*pid_list;
 	char				**env_tab;
 	int					size;
 	int					nb_cmd;
 	int					nb_pipe;
 	int					nb_redir_in;
 	int					nb_redir_out;
+	int					output_fd;
+	int					input_fd;
 	int					index;
 	int					start_cmd;
 	int					ret;
@@ -92,6 +94,7 @@ typedef struct s_data
 }					t_data;
 
 char	*env_loop(char **envp, char *cmd);
+char	*ft_itoa(int nb);
 char	*ft_strcpy(char *dest, char *src, int start, int end);
 char	*ft_strdup(char *src, int start, int end);
 char	*ft_strjoin(char *s1, char *s2);
@@ -111,13 +114,13 @@ int		append_list(t_data *data, char *var);
 int		builtin_list(t_data *data, char **cmd);
 int		builtin_parent(t_data *data, char **cmd);
 int		check_error_node(t_node **node_tab, int size);
-int		check_env_var(t_node **node_tab, int size, t_var_env **env_list);
+int		check_env_var(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 int		check_unclosed(char *cmd);
 int		compute_size_cmd(t_data *data, t_node **node_tab);
 int		count_redir_cmd(t_data *data, t_node *node_tab);
-int		exec_builtin(t_data *data, char **args, int fd_in, int fd_out);
-int		exec_cmd(char *path, char **args, int fd_in, int fd_out);
-int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list);
+int		exec_builtin(t_data *data, char **args);
+int		exec_cmd(char *path, char **args, t_data *data);
+int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list, t_data *data);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
 int		ft_cd(t_data *data, char **cmd);
 int		ft_echo(char **tab);
@@ -160,10 +163,10 @@ void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
 void	free_all(char **content);
-void	handle_redir(t_data *data, int *fd_out, int *fd_in, t_node *node_tab);
+void	handle_redir(t_data *data, t_node *node_tab);
 void	init_data(t_data *data, t_node **node_tab, int size);
 void	init_tab(t_tabint	*tab);
-void	parser(t_node **node_tab, int size, t_var_env **env_list);
+void	parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 void	ft_putstr_fd(char *str, int fd);
 void	ft_putstr_nl_fd(char *str, int fd);
 
