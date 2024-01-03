@@ -32,6 +32,8 @@
 # define MAX_EXIT		9223372036854775807
 # define MIN_EXIT		-9223372036854775807
 
+extern int	g_exit_code;
+
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
 

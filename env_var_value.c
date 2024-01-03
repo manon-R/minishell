@@ -43,16 +43,14 @@ void	sub_part_expand_var(t_node *node, char *tmp, int name_size, char *value)
 int	expand_var(t_node **node_tab, int index, char *value, int name_size )
 {
 	int		final_size;
-	// int		i;
 	char	*tmp;
 
-	// i = 0;
 	final_size = ft_strlen((*node_tab)[index].token) - name_size + \
 				ft_strlen(value);
 	tmp = (*node_tab)[index].token;
 	(*node_tab)[index].token = malloc(final_size + 1);
 	if (!(*node_tab)[index].token)
-		return (FAIL);
+		return (free(tmp), FAIL);
 	sub_part_expand_var(&((*node_tab)[index]), tmp, name_size, value);
 	return (SUCCESS);
 }

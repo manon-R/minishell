@@ -61,7 +61,7 @@ int exec_cmd(char *path, char **args, t_data *data)
             perror("execve failed");
 		return (free_all(args), free(path), SUCCESS);
     }
-	return (SUCCESS);
+	return (free_all(args), args = NULL, free(path), SUCCESS);
 }
 
 int	exec_builtin(t_data *data, char **args)

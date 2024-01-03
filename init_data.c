@@ -58,8 +58,12 @@ int	count_cmd(t_node **node_tab, int size)
 	{
 		if (((*node_tab)[i].type == T_STR && \
 			ft_strlen((*node_tab)[i].token) > 0) || \
-			(*node_tab)[i].type == T_HEREDOC)
-			result++;
+			((*node_tab)[i].type == T_HEREDOC))
+			{
+				if ((*node_tab)[i].type == T_HEREDOC)
+					i++;
+				result++;
+			}
 		i++;
 	}
 	return (result);

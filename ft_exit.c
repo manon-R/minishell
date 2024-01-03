@@ -67,7 +67,7 @@ int	ft_exit(t_data *data, char **cmd)
 		ft_putstr_nl_fd(" : numeric argument required", STDERR);
 	}
 	else if (cmd[1])
-		result = ft_atoi(cmd[1]); // calcul a faire de 255 en 255
+		result = ft_atoi(cmd[1]) % 256;
 	free_all(cmd);
 	return (result);
 }

@@ -7,7 +7,7 @@ int	compute_size(char *str)
 
 	i = 0;
 	size = 0;
-	while (str[i])
+	while (str && str[i])
 	{
 		while (str[i] && is_space(str[i]) == SUCCESS)
 			i++;

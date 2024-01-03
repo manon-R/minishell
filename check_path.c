@@ -24,6 +24,7 @@ static char	*check_absolute_path(char *cmd)
 char	*process_path(char *cmd, char **envp)
 {
 	char	*path;
+
 	if (is_path(cmd) == SUCCESS)
 	{
 		path = check_absolute_path(cmd);

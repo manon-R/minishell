@@ -1,5 +1,24 @@
 #include "minishell.h"
 
+static void	display_error_message(char *error, char *str, int code_error)
+{
+	if (code_error == 1)
+	{
+		ft_putstr_fd("minishell: ", STDOUT);
+		ft_putstr_fd(error, STDOUT);
+		ft_putstr_fd(" ", STDOUT);
+		ft_putstr_nl_fd(str, STDOUT);
+	}
+	else
+	{
+		ft_putstr_fd("minishell: ", STDOUT);
+		ft_putstr_fd(error, STDOUT);
+		ft_putstr_fd(" \"", STDOUT);
+		ft_putstr_fd(str, STDOUT);
+		ft_putstr_nl_fd(" \"", STDOUT);
+	}
+}
+
 int	check_error_node(t_node **node_tab, int size)
 {
 	int	i;
@@ -10,17 +29,17 @@ int	check_error_node(t_node **node_tab, int size)
 		if ((*node_tab)[i].type == T_ERROR && \
 			check_unclosed((*node_tab)[i].token) == FAIL)
 		{
-			printf("minishell: %s  %s\n", UNCLOSED_ERROR, (*node_tab)[i].token);
+			display_error_message(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
 			return (FAIL);
 		}
 		else if ((*node_tab)[i].type == T_ERROR && (i + 1) == size)
 		{
-			printf("minishell: %s \"%s\"\n", SYNTAX_ERROR, "newline");
+			display_error_message(SYNTAX_ERROR, "newline", 2);
 			return (FAIL);
 		}
 		else if ((*node_tab)[i].type == T_ERROR)
 		{
-			printf("minishell: %s \"%s\"\n", SYNTAX_ERROR, (*node_tab)[i].token);
+			display_error_message(SYNTAX_ERROR, (*node_tab)[i].token, 2);
 			return (FAIL);
 		}
 		i++;

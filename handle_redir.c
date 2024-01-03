@@ -47,7 +47,7 @@ int	redir_out(t_node node, t_data *data)
 int	handle_heredoc(t_node node, t_data *data)
 {
 	int	new_fd;
-
+	
 	new_fd = append_heredoc(node.token);
 	if (new_fd == FAIL)
 		return (FAIL);

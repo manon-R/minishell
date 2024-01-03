@@ -3,12 +3,14 @@
 //A VOIR SI ON GARDE OU PAS selon gestion d'erreur
 static void	merr(char *cmd)
 {
-	printf("%s: No such file or directory\n", cmd);
+	ft_putstr_fd(cmd, STDOUT);
+	ft_putstr_nl_fd(": No such file or directory", STDOUT);
 }
 
 static char	*merr2(char *cmd, char **tab)
 {
-	printf("%s: command not found\n", cmd);
+	t_putstr_fd(cmd, STDOUT);
+	ft_putstr_nl_fd(": command not found", STDOUT);
 	return (free_all(tab), NULL);
 }
 
@@ -23,7 +25,6 @@ static int	find_path(char *path, char *cmd)
 		return (free(result), 0);
 	return (free(result), -1);
 }
-
 
 static char	*path_loop(char **paths, char *cmd)
 {

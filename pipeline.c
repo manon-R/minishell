@@ -57,6 +57,7 @@ int	handle_pipeline(t_data *data)
 			(*data).input_fd = pipefd[i][0];  // Définir l'entrée pour la prochaine commande sur l'extrémité de lecture du pipe
 		}
         i++;
+		free_all(result);
     }
     // Parent 
     // Ferme toutes les extrémités de pipes dans le parent
@@ -67,23 +68,16 @@ int	handle_pipeline(t_data *data)
         i++;
     }
     // Attends que tous les processus enfants se terminent
-    // i = 0;
-    // while (i < (*data).nb_cmd) {
-    //     wait(NULL);
-    //     i++;
-    // }
+    i = 0;
+    while (i < (*data).nb_cmd) {
+        wait(NULL);
+        i++;
+    }
 	// t_child_pid *tmp;
-    // // i = 0;
 	// tmp = data->pid_list;
 	// while (tmp != NULL)
 	// {
-	// 	// if (i < (*data).nb_cmd - 1)
-	// 	// {
-	// 	// 	close(pipefd[i][0]);
-    //     // 	close(pipefd[i][1]);
-	// 	// }
 	// 	waitpid(tmp->pid, NULL, 0);
-	// 	// i++;
 	// 	tmp = tmp->next;
 	// }
 	//clean all
