@@ -12,7 +12,7 @@ int	ft_echo(char **tab)
 		opt++;
 		i++;
 	}
-	while(tab[i] != NULL)
+	while (tab[i] != NULL)
 	{
 		ft_putstr_fd(tab[i], STDOUT);
 		if (tab[i + 1] && tab[i][0] != '\0')

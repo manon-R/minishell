@@ -18,6 +18,5 @@ void	free_all(char **content)
 	{
 		free(content);
 		content = NULL;
-
 	}
 }

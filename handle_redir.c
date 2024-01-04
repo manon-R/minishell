@@ -21,7 +21,7 @@ int	redir_in(t_node node, t_data *data)
 {
 	int	new_fd;
 
-	check_file(node.token, 1); // 1 in case of redir in
+	check_file(node.token, 1);
 	new_fd = open(node.token, O_RDONLY);
 	if (new_fd < 0)
 		return (FAIL);
@@ -47,7 +47,7 @@ int	redir_out(t_node node, t_data *data)
 int	handle_heredoc(t_node node, t_data *data)
 {
 	int	new_fd;
-	
+
 	new_fd = append_heredoc(node.token);
 	if (new_fd == FAIL)
 		return (FAIL);
@@ -55,8 +55,6 @@ int	handle_heredoc(t_node node, t_data *data)
 	return (SUCCESS);
 }
 
-// a voir si besoin de mettre en valeur de retour int ou void selon gestion
-// des cas d'erreurs
 void	handle_redir(t_data *data, t_node *node_tab)
 {
 	while ((*data).index < (*data).size && \
@@ -67,20 +65,20 @@ void	handle_redir(t_data *data, t_node *node_tab)
 			if (handle_heredoc(node_tab[(*data).index], data) == FAIL)
 				return ;
 		}
-		else if (node_tab[(*data).index].type == T_REDIR_IN) //else
+		else if (node_tab[(*data).index].type == T_REDIR_IN)
 		{
 			if (redir_in(node_tab[(*data).index], data) == FAIL)
-				return ;// return (FAIL);
+				return ;
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT)
 		{
 			if (redir_out(node_tab[(*data).index], data) == FAIL)
-				return ;// return (FAIL);
+				return ;
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT_APPEND)
 		{
 			if (redir_out(node_tab[(*data).index], data) == FAIL)
-				return ;// return (FAIL);
+				return ;
 		}
 		(*data).index++;
 	}

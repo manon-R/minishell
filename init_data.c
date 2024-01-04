@@ -16,6 +16,24 @@ int	count_pipe(t_node **node_tab, int size)
 	return (result);
 }
 
+void	sub_count_redir_cmd(t_data *data, t_node *node_tab, int *i, int *result)
+{
+	while (*i < (*data).size && node_tab[*i].type != T_PIPE)
+	{
+		if (is_redir_node(node_tab[*i]) == SUCCESS)
+		{
+			if (node_tab[*i].type == T_HEREDOC || \
+				node_tab[*i].type == T_REDIR_IN)
+				(*data).nb_redir_in++;
+			if (node_tab[*i].type == T_REDIR_OUT || \
+				node_tab[*i].type == T_REDIR_OUT_APPEND)
+				(*data).nb_redir_out++;
+			(*result)++;
+		}
+		(*i)++;
+	}
+}
+
 int	count_redir_cmd(t_data *data, t_node *node_tab)
 {
 	int	result;
@@ -25,19 +43,7 @@ int	count_redir_cmd(t_data *data, t_node *node_tab)
 	result = 0;
 	(*data).nb_redir_in = 0;
 	(*data).nb_redir_out = 0;
-	while (i < (*data).size && node_tab[i].type != T_PIPE)
-	{
-		if (is_redir_node(node_tab[i]) == SUCCESS)
-		{
-			if (node_tab[i].type == T_HEREDOC || node_tab[i].type == T_REDIR_IN)
-				(*data).nb_redir_in++;
-			if (node_tab[i].type == T_REDIR_OUT || \
-				node_tab[i].type == T_REDIR_OUT_APPEND)
-				(*data).nb_redir_out++;
-			result++;
-		}
-		i++;
-	}
+	sub_count_redir_cmd(data, node_tab, &i, &result);
 	if (result == 0)
 	{
 		if (i < (*data).size && node_tab[i].type == T_PIPE)
@@ -59,11 +65,11 @@ int	count_cmd(t_node **node_tab, int size)
 		if (((*node_tab)[i].type == T_STR && \
 			ft_strlen((*node_tab)[i].token) > 0) || \
 			((*node_tab)[i].type == T_HEREDOC))
-			{
-				if ((*node_tab)[i].type == T_HEREDOC)
-					i++;
-				result++;
-			}
+		{
+			if ((*node_tab)[i].type == T_HEREDOC)
+				i++;
+			result++;
+		}
 		i++;
 	}
 	return (result);

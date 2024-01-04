@@ -9,7 +9,7 @@ static void	merr(char *cmd)
 
 static char	*merr2(char *cmd, char **tab)
 {
-	t_putstr_fd(cmd, STDOUT);
+	ft_putstr_fd(cmd, STDOUT);
 	ft_putstr_nl_fd(": command not found", STDOUT);
 	return (free_all(tab), NULL);
 }
@@ -40,8 +40,8 @@ static char	*path_loop(char **paths, char *cmd)
 		{
 			result = ft_strjoin(paths[i], cmd);
 			if (!result)
-				return (free(paths), paths = NULL, NULL); // free_all(ext_cmd),
-			return (free_all(paths), paths = NULL, result); //free_all(ext_cmd),
+				return (free(paths), paths = NULL, NULL);
+			return (free_all(paths), paths = NULL, result);
 		}
 		i++;
 	}

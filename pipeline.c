@@ -26,12 +26,12 @@ int	handle_pipeline(t_data *data)
 		}
 	}
 	(*data).input_fd = STDIN_FILENO;
-	while (i < (*data).nb_cmd) 
-    {
+	while (i < (*data).nb_cmd)
+	{
 		if (i == (*data).nb_cmd - 1)
 		{
 			(*data).last = SUCCESS;
-			(*data).output_fd = STDOUT_FILENO; 
+			(*data).output_fd = STDOUT_FILENO;
 		}
 		else
 			(*data).output_fd = pipefd[i][1];
@@ -40,7 +40,8 @@ int	handle_pipeline(t_data *data)
 		result = extract_cmd(data);
 		if (result[0])
 		{
-			if (ft_strcmp(result[0], "exit") == SUCCESS && (*data).last == SUCCESS)
+			if (ft_strcmp(result[0], "exit") == SUCCESS && \
+				(*data).last == SUCCESS)
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)
 				(*data).ret = exec_builtin(data, result);
@@ -51,28 +52,29 @@ int	handle_pipeline(t_data *data)
 					(*data).ret = exec_cmd(path, result, data);
 			}
 		}
-		if (i < (*data).nb_cmd - 1) 
+		if (i < (*data).nb_cmd - 1)
 		{
-			close(pipefd[i][1]); // Ferme l'extrémité d'écriture du pipe pour la commande actuelle
-			(*data).input_fd = pipefd[i][0];  // Définir l'entrée pour la prochaine commande sur l'extrémité de lecture du pipe
+			close(pipefd[i][1]);// Ferme l'extrémité d'écriture du pipe pour la commande actuelle
+			(*data).input_fd = pipefd[i][0];// Définir l'entrée pour la prochaine commande sur l'extrémité de lecture du pipe
 		}
-        i++;
+		i++;
 		free_all(result);
-    }
-    // Parent 
-    // Ferme toutes les extrémités de pipes dans le parent
-    i = 0;
-    while (i < (*data).nb_cmd - 1) {
-        close(pipefd[i][0]);
-        close(pipefd[i][1]);
-        i++;
-    }
-    // Attends que tous les processus enfants se terminent
-    i = 0;
-    while (i < (*data).nb_cmd) {
-        wait(NULL);
-        i++;
-    }
+	}
+	// Parent : Ferme toutes les extrémités de pipes dans le parent
+	i = 0;
+	while (i < (*data).nb_cmd - 1)
+	{
+		close(pipefd[i][0]);
+		close(pipefd[i][1]);
+		i++;
+	}
+	// Attends que tous les processus enfants se terminent
+	i = 0;
+	while (i < (*data).nb_cmd)
+	{
+		wait(NULL);
+		i++;
+	}
 	// t_child_pid *tmp;
 	// tmp = data->pid_list;
 	// while (tmp != NULL)
@@ -81,5 +83,5 @@ int	handle_pipeline(t_data *data)
 	// 	tmp = tmp->next;
 	// }
 	//clean all
-    return (data->ret);
+	return (data->ret);
 }

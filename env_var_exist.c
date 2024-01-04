@@ -2,7 +2,7 @@
 
 int	var_exist(t_var_env *env_list, char *var_name)
 {
-	t_var_env *tmp;
+	t_var_env	*tmp;
 
 	tmp = env_list;
 	while (tmp != NULL)

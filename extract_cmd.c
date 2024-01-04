@@ -1,18 +1,12 @@
 #include "minishell.h"
 
-// ls -la > out truc | echo hello
-// (ls -la) (out) () (truc) | (echo hello)
-// Boucler sur les nodes jusqu'au pipe => compter le nombre de str 
-// puis Boucler sur les nodes jusqu'au pipe et split ["ls", "-la", "truc"] 
-//=> boucler sur chaque token et split si space ou boucler si entre quote
-
 char	**split_cmd(t_data *data, t_node **node_tab)
 {
 	t_tabint	tab;
 	int			node;
 	int			size;
 	char		**result;
-	char c;
+	char		c;
 
 	size = compute_size_cmd(data, data->node_tab);
 	result = malloc((size + 1) * sizeof(char *));
@@ -22,9 +16,10 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 	tab.status = OUT_QUOTE;
 	tab.index = 0;
 	tab.i = 0;
-	while(node < data->index && node < data->size) // au lieu de 4 => data->index 
+	while (node < data->index && node < data->size)
 	{
-		if ((*node_tab)[node].type == T_STR && ft_strlen((*node_tab)[node].token) != 0)
+		if ((*node_tab)[node].type == T_STR && \
+			ft_strlen((*node_tab)[node].token) != 0)
 		{
 			while ((*node_tab)[node].token[tab.i])
 			{
@@ -59,7 +54,7 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 						tab.i++;
 					result[tab.index++] = ft_strdup((*node_tab)[node].token, tab.start, tab.i);
 					if (!result[tab.index - 1])
-						return (free_all(result), NULL); // Verif si leaks		
+						return (free_all(result), NULL);
 				}
 			}
 		}
@@ -70,20 +65,19 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 	return (result);
 }
 
-
 int	compute_size_cmd(t_data *data, t_node **node_tab)
 {
-	int	start;
-	int	i;
-	int	quote;
-	int	size;
-	char c;
+	int		start;
+	int		i;
+	int		quote;
+	int		size;
+	char	c;
 
 	start = data->start_cmd;
 	quote = OUT_QUOTE;
 	size = 0;
 	i = 0;
-	while(start < data->index && start < data->size) // au lieu de 4 => data->index 
+	while (start < data->index && start < data->size)
 	{
 		if ((*node_tab)[start].type == T_STR && ft_strlen((*node_tab)[start].token) != 0)
 		{

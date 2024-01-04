@@ -32,8 +32,6 @@
 # define MAX_EXIT		9223372036854775807
 # define MIN_EXIT		-9223372036854775807
 
-extern int	g_exit_code;
-
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
 
@@ -165,11 +163,12 @@ void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
 void	free_all(char **content);
+void	ft_putstr_fd(char *str, int fd);
+void	ft_putstr_nl_fd(char *str, int fd);
 void	handle_redir(t_data *data, t_node *node_tab);
 void	init_data(t_data *data, t_node **node_tab, int size);
 void	init_tab(t_tabint	*tab);
 void	parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
-void	ft_putstr_fd(char *str, int fd);
-void	ft_putstr_nl_fd(char *str, int fd);
+void	sort_env_tab(char **env_tab);
 
 #endif

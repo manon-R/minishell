@@ -32,6 +32,6 @@ char	*process_path(char *cmd, char **envp)
 			return (perror(cmd), NULL);
 	}
 	else
-		path = env_loop(envp, cmd );
+		path = env_loop(envp, cmd);
 	return (path);
 }

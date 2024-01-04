@@ -20,7 +20,7 @@ void	append_pid(t_data *data, pid_t pid)
 
 	new_elem = malloc(sizeof(t_child_pid));
 	if (!new_elem)
-		return ;//A coder une sortie exit and clean
+		return ;
 	new_elem->pid = pid;
 	new_elem->next = NULL;
 	if (data->pid_list == NULL)
@@ -34,64 +34,59 @@ void	append_pid(t_data *data, pid_t pid)
 	}
 }
 
-int exec_cmd(char *path, char **args, t_data *data)
+int	exec_cmd(char *path, char **args, t_data *data)
 {
-    pid_t   pid;
+	pid_t	pid;
 
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork failed");
-        exit(EXIT_FAILURE);
-    }
-    append_pid(data, pid);
-    if (pid == 0) 
-    {
-        if ((*data).input_fd != STDIN_FILENO) 
-        {
-            dup2((*data).input_fd, STDIN_FILENO);
-            close((*data).input_fd);
-        }
-        if ((*data).output_fd != STDOUT_FILENO) 
-        {
-            dup2((*data).output_fd, STDOUT_FILENO);
-            close((*data).output_fd);
-        }
-        if (execve(path, args, NULL) == -1) 
-            perror("execve failed");
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork failed"), exit(EXIT_FAILURE), FAIL);
+	append_pid(data, pid);
+	if (pid == 0)
+	{
+		if ((*data).input_fd != STDIN_FILENO)
+		{
+			dup2((*data).input_fd, STDIN_FILENO);
+			close((*data).input_fd);
+		}
+		if ((*data).output_fd != STDOUT_FILENO)
+		{
+			dup2((*data).output_fd, STDOUT_FILENO);
+			close((*data).output_fd);
+		}
+		if (execve(path, args, NULL) == -1)
+			perror("execve failed");
 		return (free_all(args), free(path), SUCCESS);
-    }
-	return (free_all(args), args = NULL, free(path), SUCCESS);
+	}
+	return (SUCCESS);
 }
 
 int	exec_builtin(t_data *data, char **args)
 {
-	pid_t   pid;
+	pid_t	pid;
 
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork failed");
-        exit(EXIT_FAILURE);
-    }
-    append_pid(data, pid);
-    if (pid == 0) 
-    {
-        if ((*data).input_fd != STDIN_FILENO) 
-        {
-            dup2((*data).input_fd , STDIN_FILENO);
-            close((*data).input_fd );
-        }
-        if ((*data).output_fd != STDOUT_FILENO) 
-        {
-            dup2((*data).output_fd, STDOUT_FILENO);
-            close((*data).output_fd);
-        }
-        builtin_list(data, args);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork failed"), exit(EXIT_FAILURE), FAIL);
+	append_pid(data, pid);
+	if (pid == 0)
+	{
+		if ((*data).input_fd != STDIN_FILENO)
+		{
+			dup2((*data).input_fd, STDIN_FILENO);
+			close((*data).input_fd);
+		}
+		if ((*data).output_fd != STDOUT_FILENO)
+		{
+			dup2((*data).output_fd, STDOUT_FILENO);
+			close((*data).output_fd);
+		}
+		builtin_list(data, args);
 		exit(SUCCESS);
-    }
-    else
-        builtin_parent(data, args);
-		// (*data).env_tab = from_list_to_tab((*data).env_list); OU PAS?
-    return (SUCCESS);
+	}
+	else
+		builtin_parent(data, args);
+	return (SUCCESS);
 }
+
+// (*data).env_tab = from_list_to_tab((*data).env_list); OU PAS?

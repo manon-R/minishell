@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-int g_exit_code = 0;
-
 void	ft_ctrl_c_exit(int i)
 {
 	(void)i;
@@ -18,7 +16,8 @@ static void	write_readline_to_pipe(int pipefd[2], char *delimiter)
 	next_line = malloc(BUFFER_SIZE);
 	next_line = readline("> ");
 	len_next_line = ft_strlen(next_line);
-	while (next_line && (ft_strcmp(next_line, delimiter) == FAIL || len_next_line != ft_strlen(delimiter)))
+	while (next_line && (ft_strcmp(next_line, delimiter) == FAIL || \
+			len_next_line != ft_strlen(delimiter)))
 	{
 		if (write(pipefd[1], next_line, len_next_line) == -1)
 			perror(NULL);
@@ -54,12 +53,11 @@ int	append_heredoc(char *delimiter)
 		return (-1);
 	}
 	if (pid == 0)
-    {
+	{
 		write_readline_to_pipe(pipefd, delimiter);
-    	return (pipefd[0]);
-    }
+		return (pipefd[0]);
+	}
 	waitpid(pid, &exit_status, 0);
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
-

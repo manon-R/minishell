@@ -28,7 +28,7 @@ int	builtin_list(t_data *data, char **cmd)
 
 int	builtin_parent(t_data *data, char **cmd)
 {
-	if (ft_strcmp(cmd[0], "export") == SUCCESS) // A FAIRE a chaque export ou unset data.env_tab = from_list_to_tab(data.env_list);
+	if (ft_strcmp(cmd[0], "export") == SUCCESS)
 		ft_export(data, cmd);
 	if (ft_strcmp(cmd[0], "unset") == SUCCESS)
 		ft_unset(data, cmd);
@@ -36,13 +36,3 @@ int	builtin_parent(t_data *data, char **cmd)
 		return (ft_cd(data, cmd));
 	return (SUCCESS);
 }
-
-/*
- echo with option -n
-◦ cd with only a relative or absolute path
-◦ pwd with no options
-◦ export with no options
-◦ unset with no options
-◦ env with no options or arguments
-◦ exit with no options
-*/

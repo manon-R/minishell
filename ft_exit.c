@@ -16,7 +16,7 @@ int	only_digit(char *cmd)
 
 long	ft_atoi(char *cmd)
 {
-	long	result;
+	long		result;
 	int			i;
 	int			neg;
 
@@ -39,11 +39,12 @@ long	ft_atoi(char *cmd)
 	return (result * neg);
 }
 
-int	is_valid(char *cmd) // only digit, < 9223372036854775808 && > -9223372036854775809 
+int	is_valid(char *cmd)
 {
 	if (!cmd)
 		return (FAIL);
-	if (only_digit(cmd) == SUCCESS && ft_atoi(cmd) >= MIN_EXIT && ft_atoi(cmd) <= MAX_EXIT)
+	if (only_digit(cmd) == SUCCESS && \
+		ft_atoi(cmd) >= MIN_EXIT && ft_atoi(cmd) <= MAX_EXIT)
 		return (SUCCESS);
 	return (FAIL);
 }

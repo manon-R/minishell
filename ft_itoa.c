@@ -26,17 +26,13 @@ char	*ft_itoa(int nb)
 	int		size;
 
 	size = ft_cpte_size(nb);
-	result = NULL;
 	result = malloc((size + 1) * sizeof(char));
 	if (result == NULL)
 		return (NULL);
 	result[size] = '\0';
 	size--;
 	if (nb == 0)
-	{
-		result[0] = '0';
-		return (result);
-	}
+		return (result[0] = '0', result);
 	if (nb < 0)
 	{
 		result[0] = '-';

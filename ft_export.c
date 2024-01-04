@@ -20,34 +20,6 @@ int	valid_syntax(char *cmd)
 	return (FAIL);
 }
 
-void	sort_env_tab(char **env_tab)
-{
-	int		i;
-	int		sorted;
-	int		size;
-	char	*tmp;
-
-	sorted = 0;
-	size = ft_strlen_tab(env_tab);
-	while (env_tab && sorted == 0)
-	{
-		sorted = 1;
-		i = 0;
-		while (i < size - 1)
-		{
-			if (ft_strcmp(env_tab[i], env_tab[i + 1]) > 0)
-			{
-				tmp = env_tab[i];
-				env_tab[i] = env_tab[i + 1];
-				env_tab[i + 1] = tmp;
-				sorted = 0;
-			}
-			i++;
-		}
-		size--;
-	}
-}
-
 void	display_sort_env(t_data *data)
 {
 	int		i;
@@ -64,10 +36,10 @@ void	display_sort_env(t_data *data)
 		ft_putstr_nl_fd(tab[i], STDOUT);
 		i++;
 	}
-	// free_all(tab);
+	free_all(tab);
 }
 
-char *extract_name(char *cmd)
+char	*extract_name(char *cmd)
 {
 	int		size;
 	int		i;
@@ -87,7 +59,7 @@ char *extract_name(char *cmd)
 	return (name);
 }
 
-char *extract_value(char *cmd, char *name)
+char	*extract_value(char *cmd, char *name)
 {
 	int		size;
 	int		i;
@@ -120,10 +92,7 @@ int	ft_export(t_data *data, char **cmd)
 	i = 1;
 	value = NULL;
 	if (!cmd[i])
-	{
-		display_sort_env(data); // env trié par ordre alphabétique + declare -x devant cf bash
-		return (SUCCESS);
-	}
+		return (display_sort_env(data), SUCCESS);
 	while (cmd[i] && (*data).nb_pipe == 0)
 	{
 		if (valid_syntax(cmd[i]) == SUCCESS)
@@ -140,7 +109,5 @@ int	ft_export(t_data *data, char **cmd)
 		}
 		i++;
 	}
-	free(name);
-	free(value);
-	return (SUCCESS);
+	return (free(name), free(value), SUCCESS);
 }

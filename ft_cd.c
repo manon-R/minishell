@@ -33,12 +33,12 @@ int	ft_cd(t_data *data, char **cmd)
 		perror("minishell: cd: too many arguments");
 		return (FAIL);
 	}
-	old_pwd =  malloc((BUFFER_SIZE + 1) * sizeof(char));
+	old_pwd = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!old_pwd)
 		return (FAIL);
 	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
 		return (FAIL);
-   	if (!cmd[1] && (*data).nb_pipe == 0) // Case cd
+	if (!cmd[1] && (*data).nb_pipe == 0)
 	{
 		if (var_exist(data->env_list, "HOME") == SUCCESS)
 		{
