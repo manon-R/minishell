@@ -12,7 +12,7 @@ int	handle_pipeline(t_data *data)
 	j = 0;
 	if ((*data).nb_pipe > 0)
 	{
-		pipefd = malloc(((*data).nb_cmd - 1) * sizeof(int[2]));
+		pipefd = malloc(((*data).nb_cmd - 1) * sizeof(int *));
 		if (!pipefd)
 			return (FAIL);
 		while (j < ((*data).nb_cmd - 1))
@@ -38,10 +38,10 @@ int	handle_pipeline(t_data *data)
 		if (count_redir_cmd(data, *(data->node_tab)) > 0)
 			handle_redir(data, *(data->node_tab));
 		result = extract_cmd(data);
-		if (result[0])
+		if (result[0] && data->input_fd >= 0 && data->output_fd > 0)
 		{
 			if (ft_strcmp(result[0], "exit") == SUCCESS && \
-				(*data).last == SUCCESS)
+				(*data).last == SUCCESS && !result[2])
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)
 				(*data).ret = exec_builtin(data, result);
@@ -50,6 +50,8 @@ int	handle_pipeline(t_data *data)
 				path = process_path(result[0], (*data).env_tab);
 				if (path)
 					(*data).ret = exec_cmd(path, result, data);
+				else
+					(*data).ret  = CMD_NOT_FOUND;
 			}
 		}
 		if (i < (*data).nb_cmd - 1)
@@ -69,19 +71,25 @@ int	handle_pipeline(t_data *data)
 		i++;
 	}
 	// Attends que tous les processus enfants se terminent
-	i = 0;
-	while (i < (*data).nb_cmd)
-	{
-		wait(NULL);
-		i++;
-	}
-	// t_child_pid *tmp;
-	// tmp = data->pid_list;
-	// while (tmp != NULL)
+	// i = 0;
+	// while (i < (*data).nb_cmd)
 	// {
-	// 	waitpid(tmp->pid, NULL, 0);
-	// 	tmp = tmp->next;
+	// 	wait(NULL);
+	// 	i++;
 	// }
+	t_child_pid *tmp;
+	int	status;
+	tmp = data->pid_list;
+	while (tmp != NULL)
+	{
+		waitpid(tmp->pid, &status, 0);
+		tmp = tmp->next;
+	}
+	if (WIFEXITED(status) && (*data).ret == 0) 
+	{
+		// Le processus fils s'est terminé normalement
+		(*data).ret = WEXITSTATUS(status);
+	}
 	//clean all
 	return (data->ret);
 }

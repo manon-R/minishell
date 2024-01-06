@@ -113,7 +113,7 @@ int		append_heredoc(char *delim);
 int		append_list(t_data *data, char *var);
 int		builtin_list(t_data *data, char **cmd);
 int		builtin_parent(t_data *data, char **cmd);
-int		check_error_node(t_node **node_tab, int size);
+int		check_error_node(t_node **node_tab, int size, t_data *data);
 int		check_env_var(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 int		check_unclosed(char *cmd);
 int		compute_size_cmd(t_data *data, t_node **node_tab);
@@ -148,6 +148,7 @@ int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
+int		parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 int		udpate_env_var_value(t_data *data, char *var_name, char *new);
 int		var_exist(t_var_env *env_list, char *var_name);
 
@@ -162,13 +163,17 @@ void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
+void	display_error(char *cmd);
 void	free_all(char **content);
+void	free_env_list(t_data *data);
+void	free_node_tab(t_data *data);
+void	free_pid_list(t_child_pid *pid_list);
+void	free_pipefd(int **pipefd, int size);
 void	ft_putstr_fd(char *str, int fd);
 void	ft_putstr_nl_fd(char *str, int fd);
 void	handle_redir(t_data *data, t_node *node_tab);
 void	init_data(t_data *data, t_node **node_tab, int size);
 void	init_tab(t_tabint	*tab);
-void	parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 void	sort_env_tab(char **env_tab);
 
 #endif

@@ -84,14 +84,15 @@ int	complete_redir_node(t_node **node_tab, int *size)
 	return (SUCCESS);
 }
 
-void	parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data)
+int	parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data)
 {
 	check_redir_node(node_tab, size);
 	check_pipe_node(node_tab, size);
-	if (check_error_node(node_tab, size) == FAIL)
-		return ;
+	if (check_error_node(node_tab, size, data) == FAIL)
+		return (FAIL);
 	if (check_env_var(node_tab, size, env_list, data) == FAIL)
-		return ;
+		return (FAIL);
 	if (complete_redir_node(node_tab, &size) == FAIL)
-		return ;
+		return (FAIL);
+	return (SUCCESS);
 }

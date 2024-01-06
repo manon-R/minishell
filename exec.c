@@ -28,7 +28,7 @@ void	append_pid(t_data *data, pid_t pid)
 	else
 	{
 		tmp = data->pid_list;
-		while (tmp->next != NULL)
+		while (tmp && tmp->next != NULL)
 			tmp = tmp->next;
 		tmp->next = new_elem;
 	}
@@ -81,12 +81,9 @@ int	exec_builtin(t_data *data, char **args)
 			dup2((*data).output_fd, STDOUT_FILENO);
 			close((*data).output_fd);
 		}
-		builtin_list(data, args);
-		exit(SUCCESS);
+		exit(builtin_list(data, args));
 	}
 	else
-		builtin_parent(data, args);
+		return (builtin_parent(data, args));
 	return (SUCCESS);
 }
-
-// (*data).env_tab = from_list_to_tab((*data).env_list); OU PAS?

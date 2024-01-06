@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void	display_error_message(char *error, char *str, int code_error)
+static int	display_error_message(char *error, char *str, int code_error)
 {
 	if (code_error == 1)
 	{
@@ -8,6 +8,7 @@ static void	display_error_message(char *error, char *str, int code_error)
 		ft_putstr_fd(error, STDOUT);
 		ft_putstr_fd(" ", STDOUT);
 		ft_putstr_nl_fd(str, STDOUT);
+		return (FAIL);
 	}
 	else
 	{
@@ -16,10 +17,11 @@ static void	display_error_message(char *error, char *str, int code_error)
 		ft_putstr_fd(" \"", STDOUT);
 		ft_putstr_fd(str, STDOUT);
 		ft_putstr_nl_fd(" \"", STDOUT);
+		return (MISUSE);
 	}
 }
 
-int	check_error_node(t_node **node_tab, int size)
+int	check_error_node(t_node **node_tab, int size, t_data *data)
 {
 	int	i;
 
@@ -29,17 +31,17 @@ int	check_error_node(t_node **node_tab, int size)
 		if ((*node_tab)[i].type == T_ERROR && \
 			check_unclosed((*node_tab)[i].token) == FAIL)
 		{
-			display_error_message(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
+			(*data).ret = display_error_message(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
 			return (FAIL);
 		}
 		else if ((*node_tab)[i].type == T_ERROR && (i + 1) == size)
 		{
-			display_error_message(SYNTAX_ERROR, "newline", 2);
+			(*data).ret = display_error_message(SYNTAX_ERROR, "newline", 2);
 			return (FAIL);
 		}
 		else if ((*node_tab)[i].type == T_ERROR)
 		{
-			display_error_message(SYNTAX_ERROR, (*node_tab)[i].token, 2);
+			(*data).ret = display_error_message(SYNTAX_ERROR, (*node_tab)[i].token, 2);
 			return (FAIL);
 		}
 		i++;

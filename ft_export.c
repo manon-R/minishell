@@ -8,7 +8,7 @@ int	valid_syntax(char *cmd)
 	i = 0;
 	equal = 0;
 	if (is_alpha(cmd[i]) == FAIL && cmd[i] != '_')
-		return (FAIL);
+		return (display_error(cmd), FAIL);
 	while (cmd[i])
 	{
 		if (cmd[i] == '=')
@@ -17,7 +17,7 @@ int	valid_syntax(char *cmd)
 	}
 	if (equal > 0)
 		return (SUCCESS);
-	return (FAIL);
+	return (display_error(cmd), FAIL);
 }
 
 void	display_sort_env(t_data *data)
@@ -86,14 +86,17 @@ char	*extract_value(char *cmd, char *name)
 int	ft_export(t_data *data, char **cmd)
 {
 	int		i;
+	int		fail;
 	char	*name;
 	char	*value;
 
 	i = 1;
+	fail = 0;
+	name = NULL;
 	value = NULL;
 	if (!cmd[i])
 		return (display_sort_env(data), SUCCESS);
-	while (cmd[i] && (*data).nb_pipe == 0)
+	while (cmd && cmd[i] && (*data).nb_pipe == 0)
 	{
 		if (valid_syntax(cmd[i]) == SUCCESS)
 		{
@@ -107,7 +110,11 @@ int	ft_export(t_data *data, char **cmd)
 			else
 				append_list(data, cmd[i]);
 		}
+		else
+			fail++;
 		i++;
 	}
+	if (fail > 0)
+		return (free(name), free(value), FAIL);
 	return (free(name), free(value), SUCCESS);
 }

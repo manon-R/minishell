@@ -5,14 +5,20 @@ void	check_file(char const *file, int i)
 	if (i == 1)
 	{
 		if (access(file, R_OK) != 0)
+		{
+			ft_putstr_fd("minishell : ", STDERR);
 			perror(file);
+		}
 	}
 	else
 	{
 		if (access(file, F_OK) == 0)
 		{
 			if (access(file, W_OK) != 0)
+			{
+				ft_putstr_fd("minishell : ", STDERR);
 				perror(file);
+			}
 		}
 	}
 }
@@ -23,8 +29,6 @@ int	redir_in(t_node node, t_data *data)
 
 	check_file(node.token, 1);
 	new_fd = open(node.token, O_RDONLY);
-	if (new_fd < 0)
-		return (FAIL);
 	(*data).input_fd = new_fd;
 	return (SUCCESS);
 }
@@ -38,8 +42,6 @@ int	redir_out(t_node node, t_data *data)
 		new_fd = open(node.token, O_WRONLY | O_CREAT, 0644);
 	else
 		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0644);
-	if (new_fd < 0)
-		return (FAIL);
 	(*data).output_fd = new_fd;
 	return (SUCCESS);
 }
@@ -49,8 +51,6 @@ int	handle_heredoc(t_node node, t_data *data)
 	int	new_fd;
 
 	new_fd = append_heredoc(node.token);
-	if (new_fd == FAIL)
-		return (FAIL);
 	(*data).input_fd = new_fd;
 	return (SUCCESS);
 }

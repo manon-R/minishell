@@ -5,7 +5,7 @@ int	has_env_var(t_node previous_node, char *token)
 	int	i;
 
 	i = 0;
-	while (token[i])
+	while (token && token[i] && previous_node.token)
 	{
 		if (token[i] == '$' && token[i + 1] && token[i + 1] != ' ' && \
 			previous_node.type != T_HEREDOC)
@@ -24,7 +24,7 @@ int	check_env_var(t_node **node_tab, int size, t_var_env **env_l, t_data *data)
 	result = 0;
 	while (i < size)
 	{
-		if ((is_str_double_quoted((*node_tab)[i]) == SUCCESS || \
+		if ((*node_tab)[i].token != NULL && (is_str_double_quoted((*node_tab)[i]) == SUCCESS || \
 			is_str((*node_tab)[i]) == SUCCESS) && \
 			has_env_var((*node_tab)[i - 1], (*node_tab)[i].token) == SUCCESS)
 			result += expand_or_empty(node_tab, i, env_l, data);

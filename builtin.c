@@ -29,9 +29,9 @@ int	builtin_list(t_data *data, char **cmd)
 int	builtin_parent(t_data *data, char **cmd)
 {
 	if (ft_strcmp(cmd[0], "export") == SUCCESS)
-		ft_export(data, cmd);
+		return(ft_export(data, cmd));
 	if (ft_strcmp(cmd[0], "unset") == SUCCESS)
-		ft_unset(data, cmd);
+		return (ft_unset(data, cmd));
 	if (ft_strcmp(cmd[0], "cd") == SUCCESS)
 		return (ft_cd(data, cmd));
 	return (SUCCESS);
