@@ -30,7 +30,7 @@ int	ft_cd(t_data *data, char **cmd)
 
 	if (cmd[2])
 	{
-		perror("minishell: cd: too many arguments");
+		ft_putstr_nl_fd("minishell: cd: too many arguments", STDERR);
 		return (FAIL);
 	}
 	old_pwd = malloc((BUFFER_SIZE + 1) * sizeof(char));
@@ -53,7 +53,7 @@ int	ft_cd(t_data *data, char **cmd)
 		}
 		else
 		{
-			perror("minishell: cd: \" HOME \" undefined");
+			ft_putstr_nl_fd("minishell: cd: \" HOME \" undefined", STDERR);
 			return (FAIL);
 		}
 	}

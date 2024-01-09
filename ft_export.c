@@ -32,8 +32,8 @@ void	display_sort_env(t_data *data)
 	i = 0;
 	while (tab[i])
 	{
-		ft_putstr_fd("declare -x ", STDOUT);
-		ft_putstr_nl_fd(tab[i], STDOUT);
+		ft_putstr_fd("declare -x ", data->output_fd);
+		ft_putstr_nl_fd(tab[i], data->output_fd);
 		i++;
 	}
 	free_all(tab);

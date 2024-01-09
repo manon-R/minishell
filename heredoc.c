@@ -16,8 +16,7 @@ static void	write_readline_to_pipe(int pipefd[2], char *delimiter)
 	next_line = malloc(BUFFER_SIZE);
 	next_line = readline("> ");
 	len_next_line = ft_strlen(next_line);
-	while (next_line && (ft_strcmp(next_line, delimiter) == FAIL || \
-			len_next_line != ft_strlen(delimiter)))
+	while (next_line && ft_strcmp(next_line, delimiter) != SUCCESS) //|| en_next_line != ft_strlen(delimiter))
 	{
 		if (write(pipefd[1], next_line, len_next_line) == -1)
 			perror(NULL);

@@ -73,18 +73,12 @@ int	handle_pipeline(t_data *data)
 		i++;
 	}
 	// Attends que tous les processus enfants se terminent
-	// i = 0;
-	// while (i < (*data).nb_cmd)
-	// {
-	// 	wait(NULL);
-	// 	i++;
-	// }
 	t_child_pid *tmp;
 	int	status;
 	tmp = data->pid_list;
 	while (tmp != NULL)
 	{
-		waitpid(tmp->pid, &status, 0);
+		waitpid(tmp->pid, &status, 0); //tmp->pid
 		tmp = tmp->next;
 	}
 	if (WIFEXITED(status) && (*data).ret == 0) 
