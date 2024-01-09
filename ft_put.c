@@ -7,7 +7,8 @@ void	ft_putstr_fd(char *str, int fd)
 	i = 0;
 	while (str && str[i])
 	{
-		write(fd, &str[i], 1);
+		if (str[i] != '\"' && str[i] != '\'')
+			write(fd, &str[i], 1);
 		i++;
 	}
 }

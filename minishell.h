@@ -164,6 +164,7 @@ void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
 void	display_error(char *cmd);
+void	final_clean(t_data *data);
 void	free_all(char **content);
 void	free_env_list(t_data *data);
 void	free_node_tab(t_data *data);

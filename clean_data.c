@@ -43,18 +43,13 @@ void	free_node_tab(t_data *data)
 	i = 0;
 	while (i < (*data).size)
 	{
-		if ((*data).node_tab[i])
+		if (data->node_tab[i])
 		{
-			free((*data).node_tab[i]->token);
-			free((*data).node_tab[i]);
-			(*data).node_tab[i] = NULL;
+			free(data->node_tab[i]->token);
+			free(data->node_tab[i]);
+			data->node_tab[i] = NULL;
 		}
 		i++;
-	}
-	if ((*data).node_tab)
-	{
-		free((*data).node_tab);
-		(*data).node_tab = NULL;
 	}
 }
 
@@ -62,19 +57,19 @@ void	free_env_list(t_data *data)
 {
 	t_var_env	*tmp;
 
-	while ((*data).env_list->next != NULL)
+	while (data->env_list->next != NULL)
 	{
-		tmp = (*data).env_list->next;
-		free((*data).env_list->name);
-		free((*data).env_list->value);
-		free((*data).env_list);
-		(*data).env_list = NULL;
-		(*data).env_list = tmp;
+		tmp = data->env_list->next;
+		free(data->env_list->name);
+		free(data->env_list->value);
+		free(data->env_list);
+		data->env_list = NULL;
+		data->env_list = tmp;
 	}
-	if ((*data).env_list)
+	if (data->env_list)
 	{
-		free((*data).env_list);
-		(*data).env_list = NULL;
+		free(data->env_list);
+		data->env_list = NULL;
 	}
 }
 
@@ -85,16 +80,11 @@ void	free_pipefd(int **pipefd, int size)
 	i = 0;
 	while (i < size)
 	{
-		if (pipefd[i])
+		if (pipefd && pipefd[i])
 		{
 			free(pipefd[i]);
 			pipefd[i] = NULL;
 		}
 		i++;
-	}
-	if (pipefd)
-	{
-		free(pipefd);
-		pipefd = NULL;
 	}
 }

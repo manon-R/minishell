@@ -12,7 +12,7 @@ int	handle_pipeline(t_data *data)
 	j = 0;
 	if ((*data).nb_pipe > 0)
 	{
-		pipefd = malloc(((*data).nb_cmd - 1) * sizeof(int *));
+		pipefd = (int (*)[2]) malloc((((*data).nb_cmd - 1) * 2) * sizeof(int));
 		if (!pipefd)
 			return (FAIL);
 		while (j < ((*data).nb_cmd - 1))
@@ -38,10 +38,12 @@ int	handle_pipeline(t_data *data)
 		if (count_redir_cmd(data, *(data->node_tab)) > 0)
 			handle_redir(data, *(data->node_tab));
 		result = extract_cmd(data);
-		if (result[0] && data->input_fd >= 0 && data->output_fd > 0)
+		if (result == NULL)
+			break ;
+		else if (result[0] && data->input_fd >= 0 && data->output_fd > 0)
 		{
 			if (ft_strcmp(result[0], "exit") == SUCCESS && \
-				(*data).last == SUCCESS && !result[2])
+				(*data).last == SUCCESS && !result[2] && (*data).nb_pipe == 0)
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)
 				(*data).ret = exec_builtin(data, result);
@@ -86,10 +88,7 @@ int	handle_pipeline(t_data *data)
 		tmp = tmp->next;
 	}
 	if (WIFEXITED(status) && (*data).ret == 0) 
-	{
-		// Le processus fils s'est terminé normalement
 		(*data).ret = WEXITSTATUS(status);
-	}
-	//clean all
+	// free_pipefd((int **)pipefd, (*data).nb_cmd - 1);
 	return (data->ret);
 }

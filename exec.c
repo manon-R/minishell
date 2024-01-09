@@ -56,7 +56,7 @@ int	exec_cmd(char *path, char **args, t_data *data)
 		}
 		if (execve(path, args, NULL) == -1)
 			perror("execve failed");
-		return (free_all(args), free(path), SUCCESS);
+		return (SUCCESS); //free_all(args), free(path),
 	}
 	return (SUCCESS);
 }

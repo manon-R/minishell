@@ -54,7 +54,7 @@ int	ft_exit(t_data *data, char **cmd)
 	int	result;
 
 	result = SUCCESS;
-	if (data->nb_pipe == 0 || data->last == SUCCESS)
+	if (data->nb_pipe == 0 && data->last == SUCCESS)
 		ft_putstr_nl_fd("exit", STDERR);
 	if (cmd[1] && cmd[2])
 	{
@@ -66,6 +66,7 @@ int	ft_exit(t_data *data, char **cmd)
 		ft_putstr_fd("minishell: exit: ", STDERR);
 		ft_putstr_fd(cmd[1], STDERR);
 		ft_putstr_nl_fd(" : numeric argument required", STDERR);
+		result = MISUSE;
 	}
 	else if (cmd[1])
 		result = ft_atoi(cmd[1]) % 256;
