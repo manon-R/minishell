@@ -36,7 +36,7 @@ void	display_sort_env(t_data *data)
 		ft_putstr_nl_fd(tab[i], data->output_fd);
 		i++;
 	}
-	free_all(tab);
+	// free_all(tab); // fait invalid free
 }
 
 char	*extract_name(char *cmd)

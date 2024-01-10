@@ -34,6 +34,8 @@
 
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
+# define CHEVRON1 		" « "
+# define CHEVRON2 		" » "
 
 typedef enum e_token_type
 {

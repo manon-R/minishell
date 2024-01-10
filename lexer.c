@@ -33,6 +33,8 @@ t_node	*lexer(char **cmd_tab)
 	i = 0;
 	index = 0;
 	node_tab = malloc(ft_strlen_tab(cmd_tab) * sizeof(t_node));
+	if (!node_tab)
+		return (NULL);
 	while (cmd_tab && cmd_tab[i])
 	{
 		if (sub_lexer(cmd_tab, &node_tab, &i, &index) == FAIL)
