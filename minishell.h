@@ -9,6 +9,7 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <signal.h>
 # include <termios.h>
 
@@ -20,9 +21,9 @@
 # define CMD_NOT_FOUND	127
 # define CTRL_C			130
 
-# define STDIN 			0
-# define STDOUT 		1
-# define STDERR 		2
+# define STDIN			0
+# define STDOUT			1
+# define STDERR			2
 
 # define IN_QUOTE		42
 # define OUT_QUOTE		-42
@@ -34,8 +35,8 @@
 
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
-# define CHEVRON1 		" « "
-# define CHEVRON2 		" » "
+# define CHEVRON1		" « "
+# define CHEVRON2		" » "
 
 typedef enum e_token_type
 {
@@ -129,7 +130,7 @@ int		ft_echo(char **tab);
 int		ft_env(t_data *data, char **cmd);
 int		ft_exit(t_data *data, char **cmd);
 int		ft_export(t_data *data, char **cmd);
-int		ft_pwd(void);
+int		ft_pwd(char **cmd);
 int		ft_size_env_list(t_var_env *env_list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *tab);
@@ -139,10 +140,12 @@ int		get_index_equal(char *var);
 int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
 int		handle_pipeline(t_data *data);
+int		has_plus_equal(char *cmd);
 int		init_env_list(t_data *data, char **envp);
 int		is_alpha(char c);
 int		is_builtin(char *cmd);
 int		is_digit(char c);
+int		is_directory(char *cmd);
 int		is_heredoc_node(t_node node);
 int		is_redir_node(t_node node);
 int		is_separators(char c);
@@ -150,6 +153,7 @@ int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
+int		is_valid_option(char *builtin, char *cmd);
 int		parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 int		udpate_env_var_value(t_data *data, char *var_name, char *new);
 int		var_exist(t_var_env *env_list, char *var_name);
@@ -166,6 +170,8 @@ void	check_redir_node(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
 void	display_error(char *cmd);
+void	display_error_dir(char *cmd);
+void	display_sort_env(t_data *data);
 void	final_clean(t_data *data);
 void	free_all(char **content);
 void	free_env_list(t_data *data);

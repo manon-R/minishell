@@ -5,6 +5,8 @@ static int	is_option(char *str)
 	int	i;
 
 	i = 0;
+	if (ft_strcmp(str, "\"-n\"") == SUCCESS)
+		return (SUCCESS);
 	if (str && str[i] == '-')
 		i++;
 	else
@@ -22,20 +24,22 @@ int	ft_echo(char **tab)
 {
 	int	i;
 	int	opt;
+	int	word;
 
 	i = 1;
 	opt = 0;
-	if (tab[i] && ((is_option(tab[i]) == SUCCESS) \
-		|| ft_strcmp(tab[i], "\"-n\"") == SUCCESS))
+	word = 0;
+	if (tab[i] && is_option(tab[i]) == SUCCESS)
 	{
 		opt++;
 		i++;
 	}
 	while (tab[i] != NULL)
 	{
-		if (is_option(tab[i]) != SUCCESS)
+		if (is_option(tab[i]) != SUCCESS || (is_option(tab[i]) == SUCCESS && word > 0))
 		{
 			ft_putstr_fd(tab[i], STDOUT);
+			word++;
 			if (tab[i + 1] && tab[i][0] != '\0')
 				write(1, " ", 1);
 		}	

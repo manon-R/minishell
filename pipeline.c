@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+int	is_dir_or_cmdnotfound(char *path)
+{
+	if (is_directory(path) == SUCCESS)
+		return (PERM_DENY);
+	return (CMD_NOT_FOUND);
+}
+
 int	handle_pipeline(t_data *data)
 {
 	int		(*pipefd)[2];
@@ -53,7 +60,7 @@ int	handle_pipeline(t_data *data)
 				if (path)
 					(*data).ret = exec_cmd(path, result, data);
 				else
-					(*data).ret  = CMD_NOT_FOUND;
+					(*data).ret  = is_dir_or_cmdnotfound(result[0]);
 			}
 		}
 		if (i < (*data).nb_cmd - 1)

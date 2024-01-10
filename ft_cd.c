@@ -38,7 +38,7 @@ int	ft_cd(t_data *data, char **cmd)
 		return (FAIL);
 	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
 		return (FAIL);
-	if (!cmd[1] && (*data).nb_pipe == 0)
+	if ((!cmd[1] || cmd[1][0] == '~') && (*data).nb_pipe == 0)
 	{
 		if (var_exist(data->env_list, "HOME") == SUCCESS)
 		{
@@ -59,6 +59,8 @@ int	ft_cd(t_data *data, char **cmd)
 	}
 	if ((*data).nb_pipe == 0)
 	{
+		if (is_valid_option(cmd[0], cmd[1]) == FAIL)
+			return (MISUSE);
 		if (chdir(cmd[1]) != 0)
 		{
 			ft_putstr_fd("minishell: cd: ", STDERR);

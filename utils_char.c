@@ -27,3 +27,15 @@ int	is_alpha(char c)
 		return (SUCCESS);
 	return (FAIL);
 }
+
+int	has_plus_equal(char *cmd)
+{
+	int	equal;
+
+	equal = get_index_equal(cmd);
+	if (equal == 0)
+		return (FAIL);
+	if (cmd[equal - 1] && cmd[equal - 1] == '+')
+		return (SUCCESS);
+	return (FAIL);
+}

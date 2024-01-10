@@ -1,42 +1,25 @@
 #include "minishell.h"
 
-int	valid_syntax(char *cmd)
+int	valid_syntax(char *cmd, int size)
 {
 	int	i;
-	int	equal;
 
 	i = 0;
-	equal = 0;
 	if (is_alpha(cmd[i]) == FAIL && cmd[i] != '_')
 		return (display_error(cmd), FAIL);
-	while (cmd[i])
+	i++;
+	if (size == 0)
+		size = ft_strlen(cmd);
+	while (cmd[i] && i < size)
 	{
-		if (cmd[i] == '=')
-			equal++;
-		i++;
+		if (i == size - 1 && (cmd[i] == '+' || is_digit(cmd[i]) == SUCCESS || is_alpha(cmd[i]) == SUCCESS))
+			i++;
+		else if (i != size - 1 && (is_digit(cmd[i]) == SUCCESS || is_alpha(cmd[i]) == SUCCESS || cmd[i] == '_'))
+			i++;
+		else
+			return (display_error(cmd), FAIL);
 	}
-	if (equal > 0)
-		return (SUCCESS);
-	return (display_error(cmd), FAIL);
-}
-
-void	display_sort_env(t_data *data)
-{
-	int		i;
-	char	**tab;
-
-	tab = from_list_to_tab((*data).env_list);
-	if (!tab)
-		return ;
-	sort_env_tab(tab);
-	i = 0;
-	while (tab[i])
-	{
-		ft_putstr_fd("declare -x ", data->output_fd);
-		ft_putstr_nl_fd(tab[i], data->output_fd);
-		i++;
-	}
-	// free_all(tab); // fait invalid free
+	return (SUCCESS);
 }
 
 char	*extract_name(char *cmd)
@@ -47,6 +30,8 @@ char	*extract_name(char *cmd)
 
 	size = get_index_equal(cmd);
 	i = 0;
+	if (cmd[size - 1] == '+')
+		size--;
 	name = malloc(size * sizeof(char));
 	if (!name)
 		return (NULL);
@@ -83,6 +68,27 @@ char	*extract_value(char *cmd, char *name)
 	return (value);
 }
 
+int	append_env_var_value(t_data *data, char *var_name, char *new)
+{
+	t_var_env	*tmp;
+
+	tmp = data->env_list;
+	while (tmp != NULL)
+	{
+		if (ft_strcmp(tmp->name, var_name) == SUCCESS)
+			break ;
+		tmp = tmp->next;
+	}
+	if (tmp != NULL)
+	{
+		tmp->value = ft_strjoin_classic(tmp->value, new);
+		if (!tmp->value)
+			return (free(tmp->value), FAIL);
+		return (SUCCESS);
+	}
+	return (FAIL);
+}
+
 int	ft_export(t_data *data, char **cmd)
 {
 	int		i;
@@ -98,14 +104,18 @@ int	ft_export(t_data *data, char **cmd)
 		return (display_sort_env(data), SUCCESS);
 	while (cmd && cmd[i] && (*data).nb_pipe == 0)
 	{
-		if (valid_syntax(cmd[i]) == SUCCESS)
+		if (valid_syntax(cmd[i], get_index_equal(cmd[i])) == SUCCESS)
 		{
+			if (get_index_equal(cmd[i]) == 0)
+				return (SUCCESS);
 			name = extract_name(cmd[i]);
 			if (var_exist(data->env_list, name) == SUCCESS)
 			{
 				value = extract_value(cmd[i], name);
-				if (value)
+				if (value && has_plus_equal(cmd[i]) == FAIL)
 					udpate_env_var_value(data, name, value);
+				else if (value)
+					append_env_var_value(data, name, value);
 			}
 			else
 				append_list(data, cmd[i]);

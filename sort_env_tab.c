@@ -1,5 +1,24 @@
 #include "minishell.h"
 
+void	display_sort_env(t_data *data)
+{
+	int		i;
+	char	**tab;
+
+	tab = from_list_to_tab((*data).env_list);
+	if (!tab)
+		return ;
+	sort_env_tab(tab);
+	i = 0;
+	while (tab[i])
+	{
+		ft_putstr_fd("declare -x ", data->output_fd);
+		ft_putstr_nl_fd(tab[i], data->output_fd);
+		i++;
+	}
+	// free_all(tab); // fait invalid free
+}
+
 void	sort_env_tab(char **env_tab)
 {
 	int		i;

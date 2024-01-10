@@ -16,6 +16,8 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 	tab.status = OUT_QUOTE;
 	tab.index = 0;
 	tab.i = 0;
+	ft_putstr_fd("HERE in split cmd, token = ", 1);
+	ft_putstr_nl_fd((*node_tab)[node].token, 1);
 	while (node < data->index && node < data->size)
 	{
 		if ((*node_tab)[node].type == T_STR && \
@@ -121,6 +123,12 @@ char	**extract_cmd(t_data *data)
 	result = split_cmd(data, data->node_tab);
 	if (result == NULL)
 		return (NULL);
+	int i = 0;
+	while (result[i])
+	{
+		ft_putstr_nl_fd(result[i], 1);
+		i++;
+	}
 	(*data).start_cmd = (*data).index;
 	return (result);
 }

@@ -56,7 +56,7 @@ int	exec_cmd(char *path, char **args, t_data *data)
 		}
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
-		signal(SIGPIPE, SIG_DFL);
+		signal(SIGPIPE, SIG_DFL);// ?
 		if (execve(path, args, data->env_tab) == -1)
 			perror(path);
 		return (SUCCESS); //free_all(args), free(path),
