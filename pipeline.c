@@ -49,7 +49,7 @@ int	handle_pipeline(t_data *data)
 			break ;
 		else if (result[0] && data->input_fd >= 0 && data->output_fd > 0)
 		{
-			if (ft_strcmp(result[0], "exit") == SUCCESS && \
+			if ((ft_strcmp(result[0], "exit") == SUCCESS || ft_strcmp(result[0], "\"exit\"") == SUCCESS ) && \
 				(*data).last == SUCCESS && !result[2] && (*data).nb_pipe == 0)
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)

@@ -41,9 +41,9 @@ int	redir_out(t_node node, t_data *data)
 
 	check_file(node.token, 0);
 	if (node.type == T_REDIR_OUT)
-		new_fd = open(node.token, O_WRONLY | O_CREAT, 0644);
+		new_fd = open(node.token, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	else
-		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0664);
 	if (new_fd < 0)
 		(*data).ret = FAIL;
 	(*data).output_fd = new_fd;

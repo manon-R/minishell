@@ -53,23 +53,39 @@ int	count_redir_cmd(t_data *data, t_node *node_tab)
 	return (result);
 }
 
+// int	count_cmd(t_node **node_tab, int size)
+// {
+// 	int	result;
+// 	int	i;
+
+// 	i = 0;
+// 	result = 0;
+// 	while (i < size)
+// 	{
+// 		if (((*node_tab)[i].type == T_STR && 
+// 			ft_strlen((*node_tab)[i].token) > 0) || 
+// 			((*node_tab)[i].type == T_HEREDOC))
+// 		{
+// 			if ((*node_tab)[i].type == T_HEREDOC)
+// 				i++;
+// 			result++;
+// 		}
+// 		i++;
+// 	}
+// 	return (result);
+// }
+
 int	count_cmd(t_node **node_tab, int size)
 {
 	int	result;
 	int	i;
 
 	i = 0;
-	result = 0;
+	result = 1;
 	while (i < size)
 	{
-		if (((*node_tab)[i].type == T_STR && \
-			ft_strlen((*node_tab)[i].token) > 0) || \
-			((*node_tab)[i].type == T_HEREDOC))
-		{
-			if ((*node_tab)[i].type == T_HEREDOC)
-				i++;
+		if ((*node_tab)[i].type == T_PIPE)
 			result++;
-		}
 		i++;
 	}
 	return (result);

@@ -72,7 +72,7 @@ int	append_list(t_data *data, char *var)
 		return (FAIL);
 	index_equal = get_index_equal(var);
 	if (var[index_equal - 1] == '+')
-	new_elem->name = ft_strdup(var, 0, index_equal - 1);
+		new_elem->name = ft_strdup(var, 0, index_equal - 1);
 	else
 		new_elem->name = ft_strdup(var, 0, index_equal);
 	new_elem->value = ft_strdup(var, (index_equal + 1), ft_strlen(var));

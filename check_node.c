@@ -32,7 +32,7 @@ int	check_error_node(t_node **node_tab, int size, t_data *data)
 	while (i < size)
 	{
 		if ((*node_tab)[i].type == T_ERROR && \
-			check_unclosed((*node_tab)[i].token) == FAIL)
+			(check_unclosed_single((*node_tab)[i].token) == FAIL || check_unclosed_double((*node_tab)[i].token) == FAIL))
 		{
 			(*data).ret = display_error_message(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
 			return (FAIL);

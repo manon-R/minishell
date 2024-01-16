@@ -40,7 +40,7 @@ int	ft_echo(char **tab)
 		{
 			ft_putstr_fd(tab[i], STDOUT);
 			word++;
-			if (tab[i + 1] && tab[i][0] != '\0')
+			if (tab[i + 1])
 				write(1, " ", 1);
 		}	
 		i++;

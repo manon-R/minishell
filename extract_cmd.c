@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+int	change_status_or_not(int status)
+{
+	if (status == IN_QUOTE)
+		return (OUT_QUOTE);
+	return (IN_QUOTE);
+}
+
 char	**split_cmd(t_data *data, t_node **node_tab)
 {
 	t_tabint	tab;
@@ -10,55 +17,71 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 
 	size = compute_size_cmd(data, data->node_tab);
 	result = malloc((size + 1) * sizeof(char *));
+	if (!node_tab)
+		return (NULL);
 	if (!result)
 		return (NULL);
 	node = data->start_cmd;
 	tab.status = OUT_QUOTE;
 	tab.index = 0;
 	tab.i = 0;
-	ft_putstr_fd("HERE in split cmd, token = ", 1);
-	ft_putstr_nl_fd((*node_tab)[node].token, 1);
 	while (node < data->index && node < data->size)
 	{
-		if ((*node_tab)[node].type == T_STR && \
-			ft_strlen((*node_tab)[node].token) != 0)
+		if ((*node_tab)[node].type == T_STR && ft_strlen((*node_tab)[node].token) != 0)
 		{
 			while ((*node_tab)[node].token[tab.i])
 			{
 				while ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] == ' ')
 					tab.i++;
-				if ((*node_tab)[node].token[tab.i] && ((*node_tab)[node].token[tab.i] == '\'' || (*node_tab)[node].token[tab.i] == '"'))
+				if ((*node_tab)[node].token[tab.i] == '"' || (*node_tab)[node].token[tab.i] == '\'' ) //boucle dans une fonction
 				{
 					c = (*node_tab)[node].token[tab.i];
-					if (tab.status == OUT_QUOTE)
+					tab.start = tab.i;
+					tab.i++;
+					tab.status = change_status_or_not(tab.status);
+					while ((*node_tab)[node].token[tab.i])
 					{
-						tab.status = IN_QUOTE;
-						tab.start = tab.i;
-					}
-					else
-						tab.status = OUT_QUOTE;
-					tab.i++;
-				}
-				if (tab.status == IN_QUOTE)
-				{
-					while ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] != c)
+						if (tab.status == OUT_QUOTE && (*node_tab)[node].token[tab.i + 1] && (*node_tab)[node].token[tab.i + 1] == ' ')
+						{
+							tab.i++;
+							break;
+						}
+						if ((*node_tab)[node].token[tab.i] == c)
+						{
+							tab.status = change_status_or_not(tab.status);
+							if (tab.status == OUT_QUOTE && (*node_tab)[node].token[tab.i + 1] && (*node_tab)[node].token[tab.i + 1] == ' ')
+							{
+								tab.i++;
+								break;
+							}
+						}
+						else if (tab.status == OUT_QUOTE && ((*node_tab)[node].token[tab.i] == '\'' || (*node_tab)[node].token[tab.i] == '"'))
+						{
+							c = (*node_tab)[node].token[tab.i];
+							tab.status = change_status_or_not(tab.status);
+						}
 						tab.i++;
-					tab.i++;
-					tab.status = OUT_QUOTE;
+					}
 					result[tab.index++] = ft_strdup((*node_tab)[node].token, tab.start, tab.i);
 					if (!result[tab.index - 1])
 						return (free_all(result), NULL);
 				}
-				else if ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] != ' ')
+				else if ((*node_tab)[node].token[tab.i])
 				{
 					tab.start = tab.i;
-					while ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] != ' ')
+					while ((*node_tab)[node].token[tab.i])
+					{
+						if ((*node_tab)[node].token[tab.i] == '"')
+							tab.status = change_status_or_not(tab.status);
+						if (tab.status == OUT_QUOTE && (*node_tab)[node].token[tab.i] == ' ')
+							break ;
 						tab.i++;
+					}
 					result[tab.index++] = ft_strdup((*node_tab)[node].token, tab.start, tab.i);
 					if (!result[tab.index - 1])
 						return (free_all(result), NULL);
 				}
-			}
+			}	
 		}
 		node++;
 		tab.i = 0;
@@ -87,28 +110,52 @@ int	compute_size_cmd(t_data *data, t_node **node_tab)
 			{
 				while ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] == ' ')
 					i++;
-				if ((*node_tab)[start].token[i] && ((*node_tab)[start].token[i] == '\'' || (*node_tab)[start].token[i] == '"'))
+				if ((*node_tab)[start].token[i] == '"' || (*node_tab)[start].token[i] == '\'' ) //boucle dans une fonction
 				{
 					c = (*node_tab)[start].token[i];
-					if (quote == OUT_QUOTE)
-						quote = IN_QUOTE;
-					else
-						quote = OUT_QUOTE;
+					size++;
 					i++;
+					quote = change_status_or_not(quote);
+					while ((*node_tab)[start].token[i])
+					{
+						if (quote == OUT_QUOTE && (*node_tab)[start].token[i + 1] && (*node_tab)[start].token[i + 1] == ' ')
+						{
+							i++;
+							break;
+						}
+						if ((*node_tab)[start].token[i] == c)
+						{
+							quote = change_status_or_not(quote);
+							if (quote == OUT_QUOTE && (*node_tab)[start].token[i + 1] && (*node_tab)[start].token[i + 1] == ' ')
+							{
+								i++;
+								break;
+							}
+						}
+						else if (quote == OUT_QUOTE && ((*node_tab)[start].token[i] == '\'' || (*node_tab)[start].token[i] == '"'))
+						{
+							c = (*node_tab)[start].token[i];
+							quote = change_status_or_not(quote);
+						}
+						i++;
+					}
 				}
-				if (quote == IN_QUOTE)
+				else if ((*node_tab)[start].token[i])
 				{
 					size++;
-					while ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] != c)
+					while ((*node_tab)[start].token[i])
+					{
+						if ((*node_tab)[start].token[i] == '"')
+							quote = change_status_or_not(quote);
+						if (quote == OUT_QUOTE && (*node_tab)[start].token[i] == ' ')
+						{
+							i++;
+							break ;
+						}
 						i++;
+					}
 				}
-				else if ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] != ' ')
-				{
-					size++;
-					while ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] != ' ')
-						i++;
-				}
-			}
+			}	
 		}
 		start++;
 		i = 0;
@@ -123,12 +170,13 @@ char	**extract_cmd(t_data *data)
 	result = split_cmd(data, data->node_tab);
 	if (result == NULL)
 		return (NULL);
-	int i = 0;
-	while (result[i])
-	{
-		ft_putstr_nl_fd(result[i], 1);
-		i++;
-	}
+	// int	i = 0;
+	// ft_putstr_nl_fd("NEW COMMAND", 1);
+	// while (result[i])
+	// {
+	// 	ft_putstr_nl_fd(result[i], 1);
+	// 	i++;
+	// }
 	(*data).start_cmd = (*data).index;
 	return (result);
 }

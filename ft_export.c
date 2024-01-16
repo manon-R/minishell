@@ -54,15 +54,20 @@ char	*extract_value(char *cmd, char *name)
 	i = get_index_equal(cmd);
 	j = 0;
 	size = ft_strlen(cmd) - ft_strlen(name);
+	if (is_double_quote(cmd, i) == SUCCESS)
+		size -= 2;
 	value = malloc(size * sizeof(char));
 	if (!value)
 		return (NULL);
 	i++;
-	while (cmd[i])
+	while (cmd && cmd[i])
 	{
-		value[j] = cmd[i];
+		if (cmd[i] != '"')
+		{
+			value[j] = cmd[i];
+			j++;
+		}	
 		i++;
-		j++;
 	}
 	value[j] = '\0';
 	return (value);
