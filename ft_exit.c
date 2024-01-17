@@ -3,14 +3,24 @@
 int	only_digit(char *cmd)
 {
 	int	i;
+	int nb_plus;
+	int	nb_min;
 
 	i = 0;
+	nb_min = 0;
+	nb_plus = 0;
 	while (cmd[i])
 	{
 		if (is_digit(cmd[i]) == FAIL && cmd[i] != '-' && cmd[i] != '+')
 			return (FAIL);
+		if (cmd[i] == '-')
+			nb_min++;
+		if (cmd[i] == '+')
+			nb_plus++;
 		i++;
 	}
+	if (nb_min > 1 || nb_plus > 1)
+		return (FAIL);
 	return (SUCCESS);
 }
 

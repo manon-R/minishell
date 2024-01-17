@@ -8,10 +8,7 @@ static int	update_pwd(t_data *data, char *old_pwd)
 	if (!new_pwd)
 		return (FAIL);
 	if (getcwd(new_pwd, BUFFER_SIZE) == NULL)
-	{
-		perror("Error");
 		return (FAIL);
-	}
 	if (var_exist(data->env_list, "OLDPWD") == SUCCESS)
 		udpate_env_var_value(data, "OLDPWD", old_pwd);
 	else
@@ -37,7 +34,12 @@ int	ft_cd(t_data *data, char **cmd)
 	if (!old_pwd)
 		return (FAIL);
 	if (getcwd(old_pwd, BUFFER_SIZE) == NULL)
+	{
+		ft_putstr_fd("minishell: cd: ", STDERR);
+		ft_putstr_fd(cmd[1], STDERR);
+		ft_putstr_nl_fd(": No such file or directory", STDERR);
 		return (FAIL);
+	}
 	if ((!cmd[1] || cmd[1][0] == '~') && (*data).nb_pipe == 0)
 	{
 		if (var_exist(data->env_list, "HOME") == SUCCESS)
@@ -46,7 +48,7 @@ int	ft_cd(t_data *data, char **cmd)
 			{
 				ft_putstr_fd("minishell: cd: ", STDERR);
 				ft_putstr_fd(take_value(data->env_list, "HOME"), STDERR);
-				ft_putstr_nl_fd(" no such file or directory", STDERR);
+				ft_putstr_nl_fd(": No such file or directory", STDERR);
 				return (FAIL);
 			}
 			return (update_pwd(data, old_pwd));
@@ -61,14 +63,13 @@ int	ft_cd(t_data *data, char **cmd)
 	{
 		if (is_valid_option(cmd[0], cmd[1]) == FAIL)
 			return (MISUSE);
-		if (chdir(cmd[1]) != 0)
+		if (chdir(cmd[1]) != 0 || update_pwd(data, old_pwd) == FAIL)
 		{
 			ft_putstr_fd("minishell: cd: ", STDERR);
 			ft_putstr_fd(cmd[1], STDERR);
-			ft_putstr_nl_fd(" No such file or directory", STDERR);
+			ft_putstr_nl_fd(": No such file or directory", STDERR);
 			return (FAIL);
 		}
-		update_pwd(data, old_pwd);
 	}
 	return (SUCCESS);
 }

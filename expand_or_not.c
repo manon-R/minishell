@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+static int	is_valid_char(char c)
+{
+	if (is_digit(c) == FAIL && is_alpha(c) == FAIL && c != '_')
+		return (FAIL);
+	return (SUCCESS);
+}
+
 int	has_env_var(t_node previous_node, char *token)
 {
 	int	i;
@@ -7,8 +14,10 @@ int	has_env_var(t_node previous_node, char *token)
 	i = 0;
 	while (token && token[i] && previous_node.token)
 	{
-		if (token[i] == '$' && token[i + 1] && token[i + 1] != ' ' && \
+		if (token[i] == '$' && token[i + 1] && (is_valid_char(token[i + 1]) == SUCCESS || token[i + 1] == '?')  && \
 			previous_node.type != T_HEREDOC)
+			return (SUCCESS);
+		if (token[i] == '$' && token[i + 1] && (token[i + 1] == '"' || token[i + 1] == '\''))
 			return (SUCCESS);
 		i++;
 	}
@@ -27,7 +36,7 @@ int	check_env_var(t_node **node_tab, int size, t_var_env **env_l, t_data *data)
 		if ((*node_tab)[i].token != NULL && (is_str_double_quoted((*node_tab)[i]) == SUCCESS || \
 			is_str((*node_tab)[i]) == SUCCESS) && \
 			has_env_var((*node_tab)[i - 1], (*node_tab)[i].token) == SUCCESS)
-			result += expand_or_empty(node_tab, i, env_l, data);
+				result += expand_or_empty(node_tab, i, env_l, data);
 		i++;
 	}
 	if (result > 0)
@@ -46,7 +55,13 @@ char	*get_name_env_var(t_node **node_tab, int index)
 		i++;
 	i++;
 	start = i;
-	while ((*node_tab)[index].token[i] && (*node_tab)[index].token[i] != ' ')
+	if ((*node_tab)[index].token[i] && is_digit((*node_tab)[index].token[i]) == SUCCESS)
+		return (ft_strdup((*node_tab)[index].token, start, i + 1));
+	if ((*node_tab)[index].token[i] && ((*node_tab)[index].token[i] == '"' || (*node_tab)[index].token[i] == '\''))
+		return ("");
+	if ((*node_tab)[index].token[i] && (*node_tab)[index].token[i] == '?')
+		return (ft_strdup((*node_tab)[index].token, start, i + 1));
+	while ((*node_tab)[index].token[i] && is_valid_char((*node_tab)[index].token[i]) == SUCCESS)
 		i++;
 	return (ft_strdup((*node_tab)[index].token, start, i));
 }
@@ -65,11 +80,14 @@ int	expand_or_empty(t_node **node_tab, int i, t_var_env **env_l, t_data *data)
 		ft_itoa(data->ret), ft_strlen(ft_itoa(data->ret)) + 1));
 	replace_space = ft_strlen(name) + 1;
 	if (var_exist(*env_l, name) == FAIL)
-		return (expand_var(node_tab, i, "", replace_space));
-	value = take_value(*env_l, name);
-	if (!value)
-		return (FAIL);
-	expand_var(node_tab, i, value, replace_space);
+		expand_var(node_tab, i, "\0", replace_space);
+	else
+	{
+		value = take_value(*env_l, name);
+		if (!value)
+			return (FAIL);
+		expand_var(node_tab, i, value, replace_space);
+	}
 	if (has_env_var((*node_tab)[i - 1], \
 		(*node_tab)[i].token) == SUCCESS)
 		return (expand_or_empty(node_tab, i, env_l, data));

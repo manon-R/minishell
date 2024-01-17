@@ -30,7 +30,10 @@ int	redir_in(t_node node, t_data *data)
 	check_file(node.token, 1);
 	new_fd = open(node.token, O_RDONLY);
 	if (new_fd < 0)
+	{
 		(*data).ret = FAIL;
+		return (FAIL);
+	}
 	(*data).input_fd = new_fd;
 	return (SUCCESS);
 }
@@ -61,7 +64,7 @@ int	handle_heredoc(t_node node, t_data *data)
 	return (SUCCESS);
 }
 
-void	handle_redir(t_data *data, t_node *node_tab)
+int	handle_redir(t_data *data, t_node *node_tab)
 {
 	while ((*data).index < (*data).size && \
 			node_tab[(*data).index].type != T_PIPE)
@@ -69,25 +72,26 @@ void	handle_redir(t_data *data, t_node *node_tab)
 		if (node_tab[(*data).index].type == T_HEREDOC)
 		{
 			if (handle_heredoc(node_tab[(*data).index], data) == FAIL)
-				return ;
+				return (FAIL);
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_IN)
 		{
 			if (redir_in(node_tab[(*data).index], data) == FAIL)
-				return ;
+				return (FAIL);
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT)
 		{
 			if (redir_out(node_tab[(*data).index], data) == FAIL)
-				return ;
+				return (FAIL);
 		}
 		else if (node_tab[(*data).index].type == T_REDIR_OUT_APPEND)
 		{
 			if (redir_out(node_tab[(*data).index], data) == FAIL)
-				return ;
+				return (FAIL);
 		}
 		(*data).index++;
 	}
 	if (node_tab[(*data).index].type == T_PIPE)
 		(*data).index++;
+	return (SUCCESS);
 }

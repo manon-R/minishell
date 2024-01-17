@@ -25,6 +25,23 @@ int	is_single_quote(char *str, int start, int end)
 	return (FAIL);
 }
 
+static int	is_str_quoted(char *str, int start, int end)
+{
+	int	i;
+
+	i = start;
+	if (str[i] && (str[i] != '"' || str[end - 1] != '"'))
+		return (FAIL);
+	i++;
+	while (str[i])
+	{
+		if (str[i] == ' ' || str[i] == '\'')
+			return (FAIL);
+		i++;
+	}
+	return (SUCCESS);
+}
+
 char	*ft_strdup_quote(char *src, int start, int end)
 {
 	char	*dest;
@@ -34,7 +51,7 @@ char	*ft_strdup_quote(char *src, int start, int end)
 
 	size_src = end - start;
 	origin = start;
-	if (is_single_quote(src, start, end) == SUCCESS)
+	if (is_single_quote(src, start, end) == SUCCESS || is_str_quoted(src, start, end) == SUCCESS)
 		size_src -= 2;
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
@@ -55,36 +72,6 @@ char	*ft_strdup_quote(char *src, int start, int end)
 	return (dest);
 }
 
-// char	*ft_strdup(char *src, int start, int end)
-// {
-// 	char	*dest;
-// 	int		size_src;
-// 	int		i;
-// 	int		origin;
-
-// 	size_src = end - start;
-// 	origin = start;
-// 	if (is_double_quote(src, start) == SUCCESS || is_single_quote(src, start, end) == SUCCESS)
-// 		size_src -= 2;
-// 	dest = malloc((size_src + 1) * sizeof(char));
-// 	if (dest == NULL)
-// 		return (NULL);
-// 	i = 0;
-// 	while (start < end)
-// 	{
-// 		if (src[start] && (start == end - 1 || start == origin) && (src[start] == '"' || src[start] == '\'' ))
-// 			start++;
-// 		else
-// 		{
-// 			dest[i] = src[start];
-// 			i++;
-// 			start++;
-// 		}
-// 	}
-// 	dest[i] = '\0';
-// 	return (dest);
-// }
-
 char	*ft_strdup(char *src, int start, int end)
 {
 	char	*dest;
@@ -94,6 +81,8 @@ char	*ft_strdup(char *src, int start, int end)
 
 	status = OUT_QUOTE;
 	size_src = end - start;
+	if (is_str_quoted(src, start, end) == SUCCESS)
+		return (ft_strdup_quote(src, start, end));
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
 		return (NULL);
@@ -114,6 +103,18 @@ char	*ft_strdup(char *src, int start, int end)
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+char	*ft_strdup_split(char *src, int start, int end)
+{
+	char	*dest;
+	int		size_src;
+
+	size_src = end - start;
+	dest = malloc((size_src + 1) * sizeof(char));
+	if (dest == NULL)
+		return (NULL);
+	return (ft_strcpy(dest, src, start, end));
 }
 
 char	*simple_strdup(char *s)

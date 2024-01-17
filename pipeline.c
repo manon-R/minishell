@@ -43,7 +43,10 @@ int	handle_pipeline(t_data *data)
 		else
 			(*data).output_fd = pipefd[i][1];
 		if (count_redir_cmd(data, *(data->node_tab)) > 0)
-			handle_redir(data, *(data->node_tab));
+		{
+			if (handle_redir(data, *(data->node_tab)) == FAIL)
+				break ;
+		}
 		result = extract_cmd(data);
 		if (result == NULL)
 			break ;
@@ -54,6 +57,8 @@ int	handle_pipeline(t_data *data)
 				(*data).exit = SUCCESS;
 			if (is_builtin(result[0]) == SUCCESS)
 				(*data).ret = exec_builtin(data, result);
+			else if (ft_strcmp(result[0], ":") == SUCCESS || ft_strcmp(result[0], "!") == SUCCESS)
+				(*data).ret = SUCCESS;
 			else
 			{
 				path = process_path(result[0], (*data).env_tab);

@@ -52,7 +52,7 @@ int	sub_part_split(char *str, t_tabint *tab, char **new_tab)
 		sub_split(str, &((*tab).i), &((*tab).status));
 		if ((*tab).i != (*tab).start)
 		{
-			new_tab[((*tab).index)++] = ft_strdup(str, (*tab).start, (*tab).i);
+			new_tab[((*tab).index)++] = ft_strdup_split(str, (*tab).start, (*tab).i);
 			if (!new_tab[(*tab).index - 1])
 				return (free_all(new_tab), FAIL);
 		}
@@ -61,7 +61,7 @@ int	sub_part_split(char *str, t_tabint *tab, char **new_tab)
 			(*tab).start = (*tab).i;
 			while (str[(*tab).i] && is_separators(str[(*tab).i]) == SUCCESS)
 				((*tab).i)++;
-			new_tab[((*tab).index)++] = ft_strdup(str, (*tab).start, (*tab).i);
+			new_tab[((*tab).index)++] = ft_strdup_split(str, (*tab).start, (*tab).i);
 			if (!new_tab[(*tab).index - 1])
 				return (free_all(new_tab), FAIL);
 		}

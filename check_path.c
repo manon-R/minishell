@@ -43,7 +43,7 @@ char	*process_path(char *cmd, char **envp)
 			return (display_error_dir(cmd), NULL);
 		path = check_absolute_path(cmd);
 		if (!path)
-			return (NULL);
+			return (perror(cmd), NULL);
 	}
 	else
 		path = env_loop(envp, cmd);
