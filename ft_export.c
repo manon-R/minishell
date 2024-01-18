@@ -12,9 +12,11 @@ int	valid_syntax(char *cmd, int size)
 		size = ft_strlen(cmd);
 	while (cmd[i] && i < size)
 	{
-		if (i == size - 1 && (cmd[i] == '+' || is_digit(cmd[i]) == SUCCESS || is_alpha(cmd[i]) == SUCCESS))
+		if (i == size - 1 && (cmd[i] == '+' || is_digit(cmd[i]) == SUCCESS || \
+			is_alpha(cmd[i]) == SUCCESS))
 			i++;
-		else if (i != size - 1 && (is_digit(cmd[i]) == SUCCESS || is_alpha(cmd[i]) == SUCCESS || cmd[i] == '_'))
+		else if (i != size - 1 && (is_digit(cmd[i]) == SUCCESS || \
+				is_alpha(cmd[i]) == SUCCESS || cmd[i] == '_'))
 			i++;
 		else
 			return (display_error(cmd), FAIL);

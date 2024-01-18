@@ -1,27 +1,20 @@
 #include "minishell.h"
 
-static int	display_error_message(char *error, char *str, int code_error)
+static void	error_return(char *cmd, t_data *data)
 {
-	if (code_error == 1)
-	{
-		ft_putstr_fd("minishell: ", STDERR);
-		ft_putstr_fd(error, STDERR);
-		ft_putstr_fd(" ", STDERR);
-		ft_putstr_nl_fd(str, STDERR);
-		return (FAIL);
-	}
+	if (ft_strcmp(cmd, "|") == SUCCESS)
+		(*data).ret = err_msg(SYNTAX_ERROR, cmd, 2);
 	else
-	{
-		ft_putstr_fd("minishell: ", STDERR);
-		ft_putstr_fd(error, STDERR);
-		ft_putstr_fd(CHEVRON1, STDERR);
-		if (ft_strlen(str) > 2 && ft_strcmp(str, "newline") != SUCCESS)
-			write(2, &str[0], 1);
-		else
-			ft_putstr_fd(str, STDERR);
-		ft_putstr_nl_fd(CHEVRON2, STDERR);
-		return (MISUSE);
-	}
+		(*data).ret = err_msg(SYNTAX_ERROR, "newline", 2);
+}
+
+static int	check_close_quote(char *cmd)
+{
+	if (check_unclosed_single(cmd) == FAIL)
+		return (FAIL);
+	if (check_unclosed_double(cmd) == FAIL)
+		return (FAIL);
+	return (SUCCESS);
 }
 
 int	check_error_node(t_node **node_tab, int size, t_data *data)
@@ -32,22 +25,17 @@ int	check_error_node(t_node **node_tab, int size, t_data *data)
 	while (i < size)
 	{
 		if ((*node_tab)[i].type == T_ERROR && \
-			(check_unclosed_single((*node_tab)[i].token) == FAIL || check_unclosed_double((*node_tab)[i].token) == FAIL))
+			check_close_quote((*node_tab)[i].token) == FAIL)
 		{
-			(*data).ret = display_error_message(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
+			(*data).ret = err_msg(UNCLOSED_ERROR, (*node_tab)[i].token, 1);
 			return (FAIL);
 		}
-		else if ((*node_tab)[i].type == T_ERROR && (i + 1) == size && ft_strlen((*node_tab)[i].token) <= 2)
-		{
-			if (ft_strcmp((*node_tab)[i].token, "|") == SUCCESS)
-				(*data).ret = display_error_message(SYNTAX_ERROR, (*node_tab)[i].token, 2);
-			else
-				(*data).ret = display_error_message(SYNTAX_ERROR, "newline", 2);
-			return (FAIL);
-		}
+		else if ((*node_tab)[i].type == T_ERROR && (i + 1) == size && \
+				ft_strlen((*node_tab)[i].token) <= 2)
+			return (error_return((*node_tab)[i].token, data), FAIL);
 		else if ((*node_tab)[i].type == T_ERROR)
 		{
-			(*data).ret = display_error_message(SYNTAX_ERROR, (*node_tab)[i].token, 2);
+			(*data).ret = err_msg(SYNTAX_ERROR, (*node_tab)[i].token, 2);
 			return (FAIL);
 		}
 		i++;
@@ -89,7 +77,7 @@ void	check_pipe_node(t_node **node_tab, int size)
 
 	if (redir_id >= 0)
 	{
-		if(redir_id - 1 < 0)
+		if (redir_id - 1 < 0)
 		{
 			(*node_tab)[redir_id].type = T_ERROR;
 			return ;

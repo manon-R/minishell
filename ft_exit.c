@@ -3,7 +3,7 @@
 int	only_digit(char *cmd)
 {
 	int	i;
-	int nb_plus;
+	int	nb_plus;
 	int	nb_min;
 
 	i = 0;

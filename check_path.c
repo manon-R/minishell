@@ -2,12 +2,10 @@
 
 int	is_directory(char *cmd)
 {
-	struct stat	fileInfo;
+	struct stat	file_info;
 
-	// Utilisez la fonction stat pour obtenir des informations sur le fichier/dossier
-	stat(cmd, &fileInfo);
-	// Vérifiez si le chemin correspond à un répertoire
-	if (S_ISDIR(fileInfo.st_mode))
+	stat(cmd, &file_info);
+	if (S_ISDIR(file_info.st_mode))
 		return (SUCCESS);
 	return (FAIL);
 }

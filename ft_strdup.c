@@ -51,7 +51,8 @@ char	*ft_strdup_quote(char *src, int start, int end)
 
 	size_src = end - start;
 	origin = start;
-	if (is_single_quote(src, start, end) == SUCCESS || is_str_quoted(src, start, end) == SUCCESS)
+	if (is_single_quote(src, start, end) == SUCCESS || \
+		is_str_quoted(src, start, end) == SUCCESS)
 		size_src -= 2;
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
@@ -59,14 +60,11 @@ char	*ft_strdup_quote(char *src, int start, int end)
 	i = 0;
 	while (start < end)
 	{
-		if (src[start] && (start == end - 1 || start == origin) &&  (src[start] == '\'' || src[start] == '"'))
+		if (src[start] && (start == end - 1 || start == origin) && \
+			(src[start] == '\'' || src[start] == '"'))
 			start++;
 		else
-		{
-			dest[i] = src[start];
-			i++;
-			start++;
-		}
+			dest[i++] = src[start++];
 	}
 	dest[i] = '\0';
 	return (dest);

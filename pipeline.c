@@ -7,6 +7,14 @@ int	is_dir_or_cmdnotfound(char *path)
 	return (CMD_NOT_FOUND);
 }
 
+int	is_empty_cmd(char *cmd)
+{
+	if (ft_strcmp(cmd, "\"\"") == SUCCESS || ft_strcmp(cmd, "") == SUCCESS || \
+		ft_strcmp(cmd, "''") == SUCCESS  || ft_strcmp(cmd, " ") == SUCCESS)
+		return (SUCCESS);
+	return (FAIL);
+}
+
 int	handle_pipeline(t_data *data)
 {
 	int		(*pipefd)[2];
@@ -52,22 +60,27 @@ int	handle_pipeline(t_data *data)
 			break ;
 		else if (result[0] && data->input_fd >= 0 && data->output_fd > 0)
 		{
-			if ((ft_strcmp(result[0], "exit") == SUCCESS || ft_strcmp(result[0], "\"exit\"") == SUCCESS ) && \
-				(*data).last == SUCCESS && !result[2] && (*data).nb_pipe == 0)
-				(*data).exit = SUCCESS;
-			if (is_builtin(result[0]) == SUCCESS)
-				(*data).ret = exec_builtin(data, result);
-			else if (ft_strcmp(result[0], ":") == SUCCESS || ft_strcmp(result[0], "!") == SUCCESS)
-				(*data).ret = SUCCESS;
+			if (is_empty_cmd(result[0]) == SUCCESS)
+				empty_cmd(data);
 			else
 			{
-				path = process_path(result[0], (*data).env_tab);
-				if (path)
-					(*data).ret = exec_cmd(path, result, data);
+				if ((ft_strcmp(result[0], "exit") == SUCCESS || ft_strcmp(result[0], "\"exit\"") == SUCCESS ) && \
+					(*data).last == SUCCESS && ft_strlen_tab(result) <= 1 && (*data).nb_pipe == 0)
+					(*data).exit = SUCCESS;
+				if (is_builtin(result[0]) == SUCCESS)
+					(*data).ret = exec_builtin(data, result);
+				else if (ft_strcmp(result[0], ":") == SUCCESS || ft_strcmp(result[0], "!") == SUCCESS)
+					(*data).ret = SUCCESS;
 				else
-					(*data).ret  = is_dir_or_cmdnotfound(result[0]);
+				{
+					path = process_path(result[0], (*data).env_tab);
+					if (path)
+						(*data).ret = exec_cmd(path, result, data);
+					else
+						(*data).ret  = is_dir_or_cmdnotfound(result[0]);
+				}
 			}
-		}
+		}	
 		if (i < (*data).nb_cmd - 1)
 		{
 			close(pipefd[i][1]);// Ferme l'extrémité d'écriture du pipe pour la commande actuelle

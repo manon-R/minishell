@@ -32,7 +32,7 @@ char	**from_list_to_tab(t_var_env *env_list)
 	t_var_env	*tmp;
 	int			i;
 
-	env_tab = malloc(ft_size_env_list(env_list) * sizeof(char *));
+	env_tab = malloc((ft_size_env_list(env_list) + 1) * sizeof(char *));
 	if (!env_tab)
 		return (NULL);
 	i = 0;

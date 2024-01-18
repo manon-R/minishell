@@ -7,6 +7,13 @@ int	change_status_or_not(int status)
 	return (IN_QUOTE);
 }
 
+int	empty_cmd(t_data *data)
+{
+	(*data).ret = CMD_NOT_FOUND;
+	ft_putstr_nl_fd("minishell: : command not found", 2);
+	return (-1);
+}
+
 char	**split_cmd(t_data *data, t_node **node_tab)
 {
 	t_tabint	tab;
@@ -16,6 +23,8 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 	char		c;
 
 	size = compute_size_cmd(data, data->node_tab);
+	if (size < 0)
+		return (NULL);
 	result = malloc((size + 1) * sizeof(char *));
 	if (!node_tab)
 		return (NULL);
@@ -104,8 +113,10 @@ int	compute_size_cmd(t_data *data, t_node **node_tab)
 	i = 0;
 	while (start < data->index && start < data->size)
 	{
-		if ((*node_tab)[start].type == T_STR && ft_strlen((*node_tab)[start].token) != 0)
+		if ((*node_tab)[start].type == T_STR && (ft_strlen((*node_tab)[start].token) != 0 || is_empty_cmd((*node_tab)[start].token) == SUCCESS))
 		{
+			if (is_empty_cmd((*node_tab)[start].token) == SUCCESS)
+				return (empty_cmd(data));
 			while ((*node_tab)[start].token[i])
 			{
 				while ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] == ' ')

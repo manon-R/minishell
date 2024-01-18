@@ -47,6 +47,5 @@ int	ft_echo(char **tab)
 	}
 	if (opt == 0)
 		write(1, "\n", 1);
-	free_all(tab);
-	return (SUCCESS);
+	return (free_all(tab), SUCCESS);
 }

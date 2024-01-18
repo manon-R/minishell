@@ -5,7 +5,8 @@ char	*take_value(t_var_env *env_list, char *name)
 	while (env_list != NULL)
 	{
 		if (ft_strcmp(env_list->name, name) == SUCCESS)
-			return (ft_strdup_quote(env_list->value, 0, ft_strlen(env_list->value)));
+			return (ft_strdup_quote(env_list->value, 0, \
+					ft_strlen(env_list->value)));
 		env_list = env_list->next;
 	}
 	return (NULL);
