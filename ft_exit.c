@@ -54,7 +54,7 @@ int	is_valid(char *cmd)
 	if (!cmd)
 		return (FAIL);
 	if (only_digit(cmd) == SUCCESS && \
-		ft_atoi(cmd) >= MIN_EXIT && ft_atoi(cmd) <= MAX_EXIT)
+		ft_atoi(cmd) >= MIN_EXIT && ft_atoi(cmd) <= MAX_EXIT && ft_strlen(cmd) <= MAX_LONG)
 		return (SUCCESS);
 	return (FAIL);
 }

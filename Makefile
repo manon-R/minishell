@@ -3,7 +3,7 @@ SRCS	= main.c clean_data.c ft_split.c ft_strcmp.c ft_strcpy.c ft_strlen.c test_m
 OBJS	= ${SRCS:.c=.o}
 CC	= cc
 RM	= rm -f
-CFLAGS	= -Wall -Wextra -Werror -g3
+CFLAGS	= -Wall -Wextra -Werror
 NAME	= minishell
 
 ${NAME}: ${OBJS}

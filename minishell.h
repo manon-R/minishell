@@ -32,6 +32,7 @@
 
 # define MAX_EXIT		9223372036854775807
 # define MIN_EXIT		-9223372036854775807
+# define MAX_LONG		19
 
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"

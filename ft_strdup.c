@@ -54,6 +54,8 @@ char	*ft_strdup_quote(char *src, int start, int end)
 	if (is_single_quote(src, start, end) == SUCCESS || \
 		is_str_quoted(src, start, end) == SUCCESS)
 		size_src -= 2;
+	if (size_src + 1 < 0)
+		return (NULL);
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
 		return (NULL);
