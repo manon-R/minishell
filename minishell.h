@@ -48,6 +48,7 @@ typedef enum e_token_type
 	T_REDIR_OUT_APPEND,
 	T_PIPE,
 	T_ERROR,
+	T_STR_REDIR,
 }					t_token_type;
 
 typedef struct s_node

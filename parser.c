@@ -78,6 +78,8 @@ int	complete_redir_node(t_node **node_tab, int *size)
 			(*node_tab)[i + 1].token = update_token(node_tab, i);
 			if (!(*node_tab)[i + 1].token)
 				return (FAIL);
+			// if (is_empty_cmd((*node_tab)[i + 1].token) == SUCCESS)
+			// 	(*node_tab)[i + 1].type = T_STR_REDIR;// HERE MODIF
 		}
 		i++;
 	}

@@ -78,6 +78,7 @@ char	*ft_strdup(char *src, int start, int end)
 	int		size_src;
 	int		i;
 	int		status;
+	char	c;
 
 	status = OUT_QUOTE;
 	size_src = end - start;
@@ -87,17 +88,37 @@ char	*ft_strdup(char *src, int start, int end)
 	if (dest == NULL)
 		return (NULL);
 	i = 0;
+	if (src[start] == '"' || '\'')
+	{
+		c = src[start];
+		if (src[start + 1] == c)
+			start += 2;
+		else
+		{
+			status = change_status_or_not(status);
+			dest[i++] = src[start++];
+		}
+	}
 	while (start < end)
 	{
-		if (src[start] == '"')
+		if (src[start] == c && status == IN_QUOTE)
 		{
-			if (src[start + 1] == '"')
+			status = change_status_or_not(status);
+			if (start + 1 < end && src[start + 1] == ' ')
+				break ;
+			dest[i++] = src[start++];
+		}
+		else if ((src[start] == '\'' || src[start] == '"') && status == OUT_QUOTE)
+		{
+			c = src[start];
+			if (src[start + 1] == c)
 				start += 2;
 			else
+			{
 				status = change_status_or_not(status);
+				dest[i++] = src[start++];
+			}
 		}
-		if (src[start] == '\'' && status == OUT_QUOTE)
-			start++;
 		else
 			dest[i++] = src[start++];
 	}

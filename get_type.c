@@ -44,6 +44,8 @@ int	is_str(t_node node)
 
 int	is_redir_node(t_node node)
 {
+	if (!node.type)
+		return (FAIL);
 	if (node.type == T_STR || node.type == T_PIPE || node.type == T_ERROR)
 		return (FAIL);
 	return (SUCCESS);

@@ -42,7 +42,7 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 			{
 				while ((*node_tab)[node].token[tab.i] && (*node_tab)[node].token[tab.i] == ' ')
 					tab.i++;
-				if ((*node_tab)[node].token[tab.i] == '"' || (*node_tab)[node].token[tab.i] == '\'' ) //boucle dans une fonction
+				if (((*node_tab)[node].token[tab.i] == '"' || (*node_tab)[node].token[tab.i] == '\'') && tab.status == OUT_QUOTE) //boucle dans une fonction //here modif
 				{
 					c = (*node_tab)[node].token[tab.i];
 					tab.start = tab.i;
@@ -115,13 +115,13 @@ int	compute_size_cmd(t_data *data, t_node **node_tab)
 	{
 		if ((*node_tab)[start].type == T_STR && (ft_strlen((*node_tab)[start].token) != 0 || is_empty_cmd((*node_tab)[start].token) == SUCCESS))
 		{
-			if (is_empty_cmd((*node_tab)[start].token) == SUCCESS)
+			if (is_empty_cmd((*node_tab)[start].token) == SUCCESS && is_redir_node((*node_tab)[start - 1]) == FAIL)
 				return (empty_cmd(data));
 			while ((*node_tab)[start].token[i])
 			{
 				while ((*node_tab)[start].token[i] && (*node_tab)[start].token[i] == ' ')
 					i++;
-				if ((*node_tab)[start].token[i] == '"' || (*node_tab)[start].token[i] == '\'' ) //boucle dans une fonction
+				if (((*node_tab)[start].token[i] == '"' || (*node_tab)[start].token[i] == '\'') && quote == OUT_QUOTE)//boucle dans une fonction
 				{
 					c = (*node_tab)[start].token[i];
 					size++;
