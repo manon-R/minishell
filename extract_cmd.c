@@ -26,9 +26,7 @@ char	**split_cmd(t_data *data, t_node **node_tab)
 	if (size < 0)
 		return (NULL);
 	result = malloc((size + 1) * sizeof(char *));
-	if (!node_tab)
-		return (NULL);
-	if (!result)
+	if (!result || !node_tab)
 		return (NULL);
 	node = data->start_cmd;
 	tab.status = OUT_QUOTE;

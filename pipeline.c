@@ -64,7 +64,7 @@ int	handle_pipeline(t_data *data)
 				empty_cmd(data);
 			else
 			{
-				if ((ft_strcmp(result[0], "exit") == SUCCESS || ft_strcmp(result[0], "\"exit\"") == SUCCESS) && \
+				if (ft_strcmp(result[0], "exit") == SUCCESS  && \
 					(*data).last == SUCCESS && ft_strlen_tab(result) <= 2 && (*data).nb_pipe == 0)
 					(*data).exit = SUCCESS;
 				if (is_builtin(result[0]) == SUCCESS)

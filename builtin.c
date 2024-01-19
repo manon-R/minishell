@@ -19,18 +19,11 @@ int	is_valid_option(char *builtin, char *cmd)
 int	is_builtin(char *cmd)
 {
 	if (cmd && (ft_strcmp(cmd, "echo") == SUCCESS || \
-		ft_strcmp(cmd, "\"echo\"") == SUCCESS || \
 		ft_strcmp(cmd, "cd") == SUCCESS || \
-		ft_strcmp(cmd, "\"cd\"") == SUCCESS || \
 		ft_strcmp(cmd, "pwd") == SUCCESS || \
-		ft_strcmp(cmd, "\"pwd\"") == SUCCESS || \
 		ft_strcmp(cmd, "export") == SUCCESS || \
-		ft_strcmp(cmd, "\"export\"") == SUCCESS || \
 		ft_strcmp(cmd, "unset") == SUCCESS || \
-		ft_strcmp(cmd, "\"unset\"") == SUCCESS || \
 		ft_strcmp(cmd, "env") == SUCCESS || \
-		ft_strcmp(cmd, "\"env\"") == SUCCESS || \
-		ft_strcmp(cmd, "\"exit\"") == SUCCESS || \
 		ft_strcmp(cmd, "exit") == SUCCESS))
 		return (SUCCESS);
 	return (FAIL);
@@ -38,31 +31,24 @@ int	is_builtin(char *cmd)
 
 int	builtin_list(t_data *data, char **cmd)
 {
-	if (ft_strcmp(cmd[0], "echo") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"echo\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "echo") == SUCCESS)
 		return (ft_echo(cmd));
-	if (ft_strcmp(cmd[0], "pwd") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"pwd\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "pwd") == SUCCESS)
 		return (ft_pwd(cmd));
-	if (ft_strcmp(cmd[0], "env") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"env\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "env") == SUCCESS)
 		ft_env(data, cmd);
-	if (ft_strcmp(cmd[0], "exit") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"exit\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "exit") == SUCCESS)
 		return (ft_exit(data, cmd));
 	return (SUCCESS);
 }
 
 int	builtin_parent(t_data *data, char **cmd)
 {
-	if (ft_strcmp(cmd[0], "export") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"export\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "export") == SUCCESS)
 		return (ft_export(data, cmd));
-	if (ft_strcmp(cmd[0], "unset") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"unset\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "unset") == SUCCESS)
 		return (ft_unset(data, cmd));
-	if (ft_strcmp(cmd[0], "cd") == SUCCESS || \
-		ft_strcmp(cmd[0], "\"cd\"") == SUCCESS)
+	if (ft_strcmp(cmd[0], "cd") == SUCCESS)
 		return (ft_cd(data, cmd));
 	return (SUCCESS);
 }
