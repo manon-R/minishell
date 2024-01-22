@@ -72,7 +72,7 @@ int	sub_part_split(char *str, t_tabint *tab, char **new_tab)
 }
 
 char	**ft_split(char *str)
-{	
+{
 	char		**new_tab;
 	t_tabint	tab;
 

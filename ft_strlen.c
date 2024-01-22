@@ -15,7 +15,7 @@ int	ft_strlen(char *tab)
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	while (tab && tab[i])
 		i++;
 	return (i);
 }

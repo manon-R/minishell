@@ -24,6 +24,50 @@ int	sub_lexer(char **cmd_tab, t_node **node_tab, int *i, int *index)
 	return (SUCCESS);
 }
 
+void	free_node_t(t_node **node_tab, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (node_tab && node_tab[i])
+		{
+			free(node_tab[i]->token);
+			node_tab[i]->token = NULL;
+			free(node_tab[i]);
+			node_tab[i] = NULL;
+		}
+		i++;
+	}
+	if (*node_tab)
+	{
+		free(*node_tab);
+		*node_tab = NULL;
+	}
+}
+
+void	free_simple_node(t_node *node_tab, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (node_tab[i].token)
+		{
+			free(node_tab[i].token);
+			node_tab[i].token = NULL;
+		}
+		i++;
+	}
+	if (node_tab)
+	{
+		free(node_tab);
+		node_tab = NULL;
+	}
+}
+
 t_node	*lexer(char **cmd_tab)
 {
 	int		i;
@@ -38,7 +82,7 @@ t_node	*lexer(char **cmd_tab)
 	while (cmd_tab && cmd_tab[i])
 	{
 		if (sub_lexer(cmd_tab, &node_tab, &i, &index) == FAIL)
-			return (NULL);
+			return (free_node_t(&node_tab, ft_strlen_tab(cmd_tab)), NULL);
 	}
 	return (node_tab);
 }

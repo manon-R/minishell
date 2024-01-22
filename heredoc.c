@@ -13,10 +13,9 @@ static void	write_readline_to_pipe(int pipefd[2], char *delimiter)
 
 	signal(SIGINT, &ft_ctrl_c_exit);
 	close(pipefd[0]);
-	next_line = malloc(BUFFER_SIZE);
 	next_line = readline("> ");
 	len_next_line = ft_strlen(next_line);
-	while (next_line && ft_strcmp(next_line, delimiter) != SUCCESS) //|| len_next_line != ft_strlen(delimiter))
+	while (next_line && ft_strcmp(next_line, delimiter) != SUCCESS)
 	{
 		if (write(pipefd[1], next_line, len_next_line) == -1)
 			perror(NULL);
@@ -26,8 +25,6 @@ static void	write_readline_to_pipe(int pipefd[2], char *delimiter)
 		next_line = readline("> ");
 		len_next_line = ft_strlen(next_line);
 	}
-	if (next_line != NULL)
-		free(next_line);
 	close(pipefd[1]);
 	exit(SUCCESS);
 }

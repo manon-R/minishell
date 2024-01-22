@@ -12,4 +12,5 @@ void	display_env_list(t_var_env *env_list)
 		ft_putstr_nl_fd(tmp->value, STDOUT);
 		tmp = tmp->next;
 	}
+	free(tmp);
 }

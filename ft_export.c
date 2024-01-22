@@ -6,7 +6,7 @@ int	valid_syntax(char *cmd, int size)
 
 	i = 0;
 	if (is_alpha(cmd[i]) == FAIL && cmd[i] != '_')
-		return (display_error(cmd), FAIL);
+		return (display_error(cmd, "export"), FAIL);
 	i++;
 	if (size == 0)
 		size = ft_strlen(cmd);
@@ -19,7 +19,7 @@ int	valid_syntax(char *cmd, int size)
 				is_alpha(cmd[i]) == SUCCESS || cmd[i] == '_'))
 			i++;
 		else
-			return (display_error(cmd), FAIL);
+			return (display_error(cmd, "export"), FAIL);
 	}
 	return (SUCCESS);
 }
@@ -34,7 +34,7 @@ char	*extract_name(char *cmd)
 	i = 0;
 	if (cmd[size - 1] == '+')
 		size--;
-	name = malloc(size * sizeof(char));
+	name = malloc((size + 1) * sizeof(char));
 	if (!name)
 		return (NULL);
 	while (i < size)
@@ -68,7 +68,7 @@ char	*extract_value(char *cmd, char *name)
 		{
 			value[j] = cmd[i];
 			j++;
-		}	
+		}
 		i++;
 	}
 	value[j] = '\0';
@@ -124,14 +124,19 @@ int	ft_export(t_data *data, char **cmd)
 				else if (value)
 					append_env_var_value(data, name, value);
 			}
-			else
-				append_list(data, cmd[i]);
+			else if (append_list(data, cmd[i]) == FAIL)
+				fail++;
 		}
 		else
 			fail++;
 		i++;
+		free(name);
+		name = NULL;
+		free(value);
+		value = NULL;
 	}
 	if (fail > 0)
-		return (free(name), free(value), FAIL);
+		return (free(name), free(value), free_env_list(data), \
+				data->env_list = NULL, FAIL);
 	return (free(name), free(value), SUCCESS);
 }

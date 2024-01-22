@@ -4,7 +4,8 @@ int	is_directory(char *cmd)
 {
 	struct stat	file_info;
 
-	stat(cmd, &file_info);
+	if (stat(cmd, &file_info) != 0)
+		return (FAIL);
 	if (S_ISDIR(file_info.st_mode))
 		return (SUCCESS);
 	return (FAIL);

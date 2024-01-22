@@ -46,7 +46,8 @@ char	*update_token(t_node **node_tab, int index)
 	i = 0;
 	j = 0;
 	tmp = (*node_tab)[index + 1].token;
-	new_token = malloc(ft_strlen(tmp) - ft_strlen((*node_tab)[index].token));
+	new_token = malloc(ft_strlen(tmp) - \
+				ft_strlen((*node_tab)[index].token) + 1);
 	if (!new_token)
 		return (0);
 	if (is_quote(tmp[j]) == SUCCESS)

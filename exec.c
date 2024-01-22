@@ -13,6 +13,12 @@
 //     }
 // }
 
+void	reset_signal(void)
+{
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+}
+
 void	append_pid(t_data *data, pid_t pid)
 {
 	t_child_pid	*new_elem;
@@ -32,6 +38,12 @@ void	append_pid(t_data *data, pid_t pid)
 			tmp = tmp->next;
 		tmp->next = new_elem;
 	}
+}
+
+static void	free_path(char *path, char *args)
+{
+	if (ft_strcmp(path, args) != SUCCESS)
+		free(path);
 }
 
 int	exec_cmd(char *path, char **args, t_data *data)
@@ -54,13 +66,14 @@ int	exec_cmd(char *path, char **args, t_data *data)
 			dup2((*data).output_fd, STDOUT_FILENO);
 			close((*data).output_fd);
 		}
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGINT, SIG_DFL);
+		reset_signal();
+		if ((*data).pipe_0 > 0)
+			close((*data).pipe_0);
 		if (execve(path, args, data->env_tab) == -1)
 			perror(path);
-		return (SUCCESS); //free_all(args), free(path),
+		// return (free_path(path, args[0]), SUCCESS);
 	}
-	return (SUCCESS);
+	return (free_path(path, args[0]), SUCCESS);
 }
 
 int	exec_builtin(t_data *data, char **args)
@@ -83,6 +96,8 @@ int	exec_builtin(t_data *data, char **args)
 			dup2((*data).output_fd, STDOUT_FILENO);
 			close((*data).output_fd);
 		}
+		if ((*data).pipe_0 > 0)
+			close((*data).pipe_0);
 		exit(builtin_list(data, args));
 	}
 	else

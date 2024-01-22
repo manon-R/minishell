@@ -12,6 +12,17 @@ char	*take_value(t_var_env *env_list, char *name)
 	return (NULL);
 }
 
+static void	loop_start_expand(t_node *node, char *tmp, int *i, int *elem)
+{
+	while (tmp && tmp[*i] && tmp[*i] != '$')
+	{
+		if (tmp[*i] == '"')
+			(*i)++;
+		else
+			(*node).token[(*elem)++] = tmp[(*i)++];
+	}
+}
+
 void	sub_part_expand_var(t_node *node, char *tmp, int name_size, char *value)
 {
 	int		i;
@@ -21,21 +32,16 @@ void	sub_part_expand_var(t_node *node, char *tmp, int name_size, char *value)
 	i = 0;
 	j = 0;
 	elem = 0;
-	while (tmp[i] && tmp[i] != '$')
-	{
-		if (tmp[i] == '"')
-			i++;
-		else
-			(*node).token[elem++] = tmp[i++];
-	}
+	loop_start_expand(node, tmp, &i, &elem);
 	i += name_size;
-	while (value[j])
+	while (value && value[j])
 		(*node).token[elem++] = value[j++];
-	while (tmp[i])
+	while (tmp && tmp[i])
 	{
 		if (tmp[i] == '"')
 			i++;
-		(*node).token[elem++] = tmp[i++];
+		if (tmp[i])
+			(*node).token[elem++] = tmp[i++];
 	}
 	(*node).token[elem] = '\0';
 	free(tmp);

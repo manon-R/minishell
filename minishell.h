@@ -13,7 +13,6 @@
 # include <signal.h>
 # include <termios.h>
 
-
 # define SUCCESS		0
 # define FAIL			1
 # define MISUSE			2
@@ -32,6 +31,7 @@
 
 # define MAX_EXIT		9223372036854775807
 # define MIN_EXIT		-9223372036854775807
+# define MAX_LONG		19
 
 # define SYNTAX_ERROR	"syntax error near unexpected token"
 # define UNCLOSED_ERROR	"syntax error unclosed quote"
@@ -47,6 +47,7 @@ typedef enum e_token_type
 	T_REDIR_OUT_APPEND,
 	T_PIPE,
 	T_ERROR,
+	T_STR_REDIR,
 }					t_token_type;
 
 typedef struct s_node
@@ -76,9 +77,16 @@ typedef struct s_tabint
 	int	status;
 }					t_tabint;
 
+typedef struct s_quote
+{
+	int		status;
+	int		size;
+	char	value;
+}					t_quote;
+
 typedef struct s_data
 {
-	struct 	s_node		**node_tab;
+	struct s_node		**node_tab;
 	struct s_var_env	*env_list;
 	struct s_child_pid	*pid_list;
 	char				**env_tab;
@@ -94,6 +102,7 @@ typedef struct s_data
 	int					ret;
 	int					last;
 	int					exit;
+	int					pipe_0;
 }					t_data;
 
 char	*env_loop(char **envp, char *cmd);
@@ -112,7 +121,7 @@ char	**extract_cmd(t_data *data);
 char	**from_list_to_tab(t_var_env *env_list);
 char	**ft_split(char *str);
 char	**simple_split(char *s, char c);
-
+char	**split_cmd(t_data *data, t_node **n_tab);
 
 int		append_heredoc(char *delim);
 int		append_list(t_data *data, char *var);
@@ -120,7 +129,8 @@ int		builtin_list(t_data *data, char **cmd);
 int		builtin_parent(t_data *data, char **cmd);
 int		change_status_or_not(int status);
 int		check_error_node(t_node **node_tab, int size, t_data *data);
-int		check_env_var(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
+int		check_env_var(t_node **node_tab, int size, t_var_env **env_list, \
+					t_data *data);
 int		check_unclosed_double(char *cmd);
 int		check_unclosed_single(char *cmd);
 int		compute_size_cmd(t_data *data, t_node **node_tab);
@@ -129,7 +139,8 @@ int		empty_cmd(t_data *data);
 int		err_msg(char *error, char *str, int code_error);
 int		exec_builtin(t_data *data, char **args);
 int		exec_cmd(char *path, char **args, t_data *data);
-int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list, t_data *data);
+int		expand_or_empty(t_node **node_tab, int index, t_var_env **env_list, \
+						t_data *data);
 int		expand_var(t_node **node_tab, int index, char *value, int name_size);
 int		ft_cd(t_data *data, char **cmd);
 int		ft_echo(char **tab);
@@ -147,6 +158,7 @@ int		get_node_id_pipe(t_node **node_tab, int size);
 int		get_node_id_redir(t_node **node_tab, int size);
 int		handle_pipeline(t_data *data);
 int		handle_redir(t_data *data, t_node *node_tab);
+int		has_env_var(char *token);
 int		has_plus_equal(char *cmd);
 int		init_env_list(t_data *data, char **envp);
 int		is_alpha(char c);
@@ -162,6 +174,7 @@ int		is_space(char c);
 int		is_str(t_node node);
 int		is_str_double_quoted(t_node node);
 int		is_str_single_quoted(t_node node);
+int		is_valid_char(char c);
 int		is_valid_option(char *builtin, char *cmd);
 int		parser(t_node **node_tab, int size, t_var_env **env_list, t_data *data);
 int		udpate_env_var_value(t_data *data, char *var_name, char *new);
@@ -176,21 +189,28 @@ t_node	*lexer(char **cmd_tab);
 void	check_file(char const *file, int i);
 void	check_pipe_node(t_node **node_tab, int size);
 void	check_redir_node(t_node **node_tab, int size);
+void	clean_node_error(t_node **node_tab, int size);
 void	del_env_var(t_data *data, char *name_del);
 void	display_env_list(t_var_env *env_list);
-void	display_error(char *cmd);
+void	display_error(char *cmd, char *builtin);
 void	display_error_dir(char *cmd);
 void	display_sort_env(t_data *data);
 void	final_clean(t_data *data);
 void	free_all(char **content);
 void	free_env_list(t_data *data);
+void	free_node_t(t_node **node_tab, int size);
 void	free_node_tab(t_data *data);
 void	free_pid_list(t_child_pid *pid_list);
 void	free_pipefd(int **pipefd, int size);
+void	free_simple_node(t_node *node_tab, int size);
 void	ft_putstr_fd(char *str, int fd);
 void	ft_putstr_nl_fd(char *str, int fd);
 void	init_data(t_data *data, t_node **node_tab, int size);
+void	init_data_split(t_tabint *tab, int *node, t_data *data);
 void	init_tab(t_tabint	*tab);
 void	sort_env_tab(char **env_tab);
+void	update_data(char *c, char value, t_tabint *tab);
+void	update_param(t_quote *quote, char value);
+void	update_quote(char *c, char value, t_tabint *tab);
 
 #endif

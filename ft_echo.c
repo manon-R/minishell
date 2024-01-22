@@ -20,31 +20,38 @@ static int	is_option(char *str)
 	return (SUCCESS);
 }
 
-int	ft_echo(char **tab)
+static void	echo_loop(char **tab, int i)
 {
-	int	i;
-	int	opt;
 	int	word;
 
-	i = 1;
-	opt = 0;
 	word = 0;
-	if (tab[i] && is_option(tab[i]) == SUCCESS)
-	{
-		opt++;
-		i++;
-	}
 	while (tab[i] != NULL)
 	{
-		if (is_option(tab[i]) != SUCCESS || (is_option(tab[i]) == SUCCESS && word > 0))
+		if (is_option(tab[i]) != SUCCESS || \
+			(is_option(tab[i]) == SUCCESS && word > 0))
 		{
 			ft_putstr_fd(tab[i], STDOUT);
 			word++;
 			if (tab[i + 1])
 				write(1, " ", 1);
-		}	
+		}
 		i++;
 	}
+}
+
+int	ft_echo(char **tab)
+{
+	int	i;
+	int	opt;
+
+	i = 1;
+	opt = 0;
+	if (tab[i] && is_option(tab[i]) == SUCCESS)
+	{
+		opt++;
+		i++;
+	}
+	echo_loop(tab, i);
 	if (opt == 0)
 		write(1, "\n", 1);
 	return (free_all(tab), SUCCESS);

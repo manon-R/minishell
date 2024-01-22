@@ -8,10 +8,10 @@ int	ft_unset(t_data *data, char **cmd)
 	i = 1;
 	fail = 0;
 	while (cmd && cmd[i])
-	{	
+	{
 		if (is_alpha(cmd[i][0]) == FAIL && cmd[i][0] != '_')
 		{
-			display_error(cmd[i]);
+			display_error(cmd[i], "unset");
 			fail++;
 		}
 		else if (var_exist(data->env_list, cmd[i]) == SUCCESS)

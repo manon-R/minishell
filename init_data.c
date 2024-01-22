@@ -103,7 +103,10 @@ void	init_data(t_data *data, t_node **node_tab, int size)
 	data->start_cmd = 0;
 	data->last = FAIL;
 	data->pid_list = NULL;
+	if (data->env_tab != NULL)
+		free_all(data->env_tab);
 	data->env_tab = NULL;
-	data->input_fd = dup(STDIN);
-	data->output_fd = dup(STDOUT);
+	data->input_fd = STDIN;
+	data->output_fd = STDOUT;
+	data->pipe_0 = -1;
 }

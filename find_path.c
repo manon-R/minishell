@@ -11,7 +11,7 @@ static char	*merr2(char *cmd, char **tab)
 {
 	ft_putstr_fd(cmd, STDOUT);
 	ft_putstr_nl_fd(": command not found", STDOUT);
-	return (free_all(tab), NULL);
+	return (free_all(tab), tab = NULL, NULL);
 }
 
 static int	find_path(char *path, char *cmd)

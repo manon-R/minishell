@@ -16,7 +16,8 @@ void	display_sort_env(t_data *data)
 		ft_putstr_nl_fd(tab[i], data->output_fd);
 		i++;
 	}
-	// free_all(tab); // fait invalid free
+	if (tab)
+		free_all(tab);
 }
 
 void	sort_env_tab(char **env_tab)

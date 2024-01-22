@@ -32,11 +32,12 @@ int	check_error_node(t_node **node_tab, int size, t_data *data)
 		}
 		else if ((*node_tab)[i].type == T_ERROR && (i + 1) == size && \
 				ft_strlen((*node_tab)[i].token) <= 2)
-			return (error_return((*node_tab)[i].token, data), FAIL);
+			return (error_return((*node_tab)[i].token, data), \
+					clean_node_error(node_tab, size), FAIL);
 		else if ((*node_tab)[i].type == T_ERROR)
 		{
 			(*data).ret = err_msg(SYNTAX_ERROR, (*node_tab)[i].token, 2);
-			return (FAIL);
+			return (clean_node_error(node_tab, size), FAIL);
 		}
 		i++;
 	}

@@ -49,6 +49,8 @@ int	redir_out(t_node node, t_data *data)
 		new_fd = open(node.token, O_WRONLY | O_APPEND | O_CREAT, 0664);
 	if (new_fd < 0)
 		(*data).ret = FAIL;
+	if ((*data).output_fd != STDOUT)
+		close((*data).output_fd);
 	(*data).output_fd = new_fd;
 	return (SUCCESS);
 }
@@ -91,7 +93,7 @@ int	handle_redir(t_data *data, t_node *node_tab)
 		}
 		(*data).index++;
 	}
-	if (node_tab[(*data).index].type == T_PIPE)
+	if ((*data).index < (*data).size && node_tab[(*data).index].type == T_PIPE)
 		(*data).index++;
 	return (SUCCESS);
 }

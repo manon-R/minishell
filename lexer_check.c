@@ -74,7 +74,8 @@ t_node	check_str(char *cmd)
 	int		size;
 
 	size = ft_strlen(cmd);
-	if (check_unclosed_single(cmd) == FAIL || check_unclosed_double(cmd) == FAIL)
+	if (check_unclosed_single(cmd) == FAIL || \
+		check_unclosed_double(cmd) == FAIL)
 		return ((t_node){T_ERROR, ft_strdup(cmd, 0, size)});
 	return ((t_node){T_STR, ft_strdup_split(cmd, 0, size)});
 }

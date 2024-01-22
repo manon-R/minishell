@@ -75,7 +75,10 @@ int	append_list(t_data *data, char *var)
 		new_elem->name = ft_strdup(var, 0, index_equal - 1);
 	else
 		new_elem->name = ft_strdup(var, 0, index_equal);
-	new_elem->value = ft_strdup(var, (index_equal + 1), ft_strlen(var));
+	if ((index_equal + 1) == ft_strlen(var))
+		new_elem->value = ft_strdup("\0", 0, 1);
+	else
+		new_elem->value = ft_strdup(var, (index_equal + 1), ft_strlen(var));
 	if (!new_elem->name || !new_elem->value)
 		return (FAIL);
 	new_elem->next = NULL;
@@ -93,7 +96,7 @@ int	append_list(t_data *data, char *var)
 
 int	init_env_list(t_data *data, char **envp)
 {
-	int			i;
+	int	i;
 
 	i = 0;
 	while (envp && envp[i])

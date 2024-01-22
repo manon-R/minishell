@@ -20,7 +20,7 @@ int	is_double_quote(char *str, int start)
 
 int	is_single_quote(char *str, int start, int end)
 {
-	if (str[start] == '\'' && str[end] == '\'')
+	if (str[start] == '\'' && str[end - 1] == '\'')
 		return (SUCCESS);
 	return (FAIL);
 }
@@ -30,12 +30,13 @@ static int	is_str_quoted(char *str, int start, int end)
 	int	i;
 
 	i = start;
-	if (str[i] && (str[i] != '"' || str[end - 1] != '"'))
+	if (str[i] && ((str[i] != '"' || str[end - 1] != '"') && \
+		is_single_quote(str, start, end) == FAIL))
 		return (FAIL);
 	i++;
-	while (str[i])
+	while (i < (end - 1))
 	{
-		if (str[i] == ' ' || str[i] == '\'')
+		if (str[i] == ' ' || str[i] == '\'' || str[i] == '"')
 			return (FAIL);
 		i++;
 	}
@@ -54,6 +55,16 @@ char	*ft_strdup_quote(char *src, int start, int end)
 	if (is_single_quote(src, start, end) == SUCCESS || \
 		is_str_quoted(src, start, end) == SUCCESS)
 		size_src -= 2;
+	if (size_src + 1 < 0)
+		return (NULL);
+	if (ft_strcmp(src, "\0") == SUCCESS)
+	{
+		dest = malloc(sizeof(char));
+		if (dest == NULL)
+			return (NULL);
+		dest[0] = '\0';
+		return (dest);
+	}
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
 		return (NULL);
@@ -76,26 +87,49 @@ char	*ft_strdup(char *src, int start, int end)
 	int		size_src;
 	int		i;
 	int		status;
+	char	c;
 
 	status = OUT_QUOTE;
 	size_src = end - start;
+	c = '"';
 	if (is_str_quoted(src, start, end) == SUCCESS)
 		return (ft_strdup_quote(src, start, end));
 	dest = malloc((size_src + 1) * sizeof(char));
 	if (dest == NULL)
 		return (NULL);
 	i = 0;
+	if (src[start] == '"' || src[start] == '\'')
+	{
+		c = src[start];
+		if (src[start + 1] == c)
+			start += 2;
+		else
+		{
+			status = change_status_or_not(status);
+			dest[i++] = src[start++];
+		}
+	}
 	while (start < end)
 	{
-		if (src[start] == '"')
+		if (src[start] == c && status == IN_QUOTE)
 		{
-			if (src[start + 1] == '"')
+			status = change_status_or_not(status);
+			if (start + 1 < end && src[start + 1] == ' ')
+				break ;
+			dest[i++] = src[start++];
+		}
+		else if ((src[start] == '\'' || src[start] == '"') && \
+				status == OUT_QUOTE)
+		{
+			c = src[start];
+			if (src[start + 1] == c)
 				start += 2;
 			else
+			{
 				status = change_status_or_not(status);
+				dest[i++] = src[start++];
+			}
 		}
-		if (src[start] == '\'' && status == OUT_QUOTE)
-			start++;
 		else
 			dest[i++] = src[start++];
 	}
